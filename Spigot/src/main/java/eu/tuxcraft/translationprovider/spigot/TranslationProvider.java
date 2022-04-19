@@ -43,16 +43,32 @@ public class TranslationProvider extends JavaPlugin {
     getLogger().info("TranslationProviderBukkit disabled");
   }
 
-  public static void mapAllTranslations(Class<?> messageClass, String prefix)
+  public static void mapAllTranslations(Class<?> clazz, String keyPrefix)
       throws IllegalAccessException {
-    for (Field field : messageClass.getDeclaredFields()) {
-      if (field.getType() == Message.class) continue;
+    if (keyPrefix.endsWith(".")) {
+      keyPrefix = keyPrefix.substring(0, keyPrefix.length() - 1);
+    }
+
+    String prefixKey = keyPrefix + ".prefix";
+
+    mapAllTranslations(clazz, keyPrefix, prefixKey);
+  }
+
+  private static void mapAllTranslations(Class<?> clazz, String keyPrefix, String prefixKey)
+      throws IllegalAccessException {
+    for (Field field : clazz.getFields()) {
+      if (field.getType() != Message.class) continue;
 
       if (!field.isAccessible()) field.setAccessible(true);
 
-      String prefixKey = prefix + ".prefix";
+      field.set(null, new LazyLoadingMessage(keyPrefix + "." + field.getName(), prefixKey));
+    }
 
-      field.set(null, new LazyLoadingMessage(prefix + field.getName(), prefixKey));
+    for (Class<?> subClazz : clazz.getClasses()) {
+      String clazzName = subClazz.getSimpleName();
+      clazzName = clazzName.substring(0, 1).toLowerCase() + clazzName.substring(1);
+
+      mapAllTranslations(subClazz, keyPrefix + "." + clazzName, prefixKey);
     }
   }
 
