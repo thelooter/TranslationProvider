@@ -2,18 +2,18 @@ package eu.tuxcraft.translationprovider.engine;
 
 import eu.tuxcraft.translationprovider.engine.cache.TranslationCache;
 import eu.tuxcraft.translationprovider.engine.cache.UserLanguageCache;
+import eu.tuxcraft.translationprovider.engine.database.UserDatabaseHelper;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.engine.translation.TranslationUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -23,8 +23,6 @@ public class TranslationProviderEngine {
 
   @Getter UserLanguageCache userLanguageCache = new UserLanguageCache();
   @Getter TranslationCache translationCache = new TranslationCache();
-
-  @Getter ExecutorService threadPool = Executors.newCachedThreadPool();
 
   @Getter static TranslationProviderEngine instance;
 
@@ -51,26 +49,41 @@ public class TranslationProviderEngine {
     try {
       getLogger().info("Starting TranslationProvider reload");
 
-      getThreadPool()
-          .execute(
-              () -> {
-                getTranslationCache().flush();
-                getUserLanguageCache().flush();
+      getTranslationCache().flush();
+      getUserLanguageCache().flush();
 
-                getLogger().info("Caches flushed");
+      getLogger().info("Caches flushed");
 
-                List<Language> availableLanguages = Language.getAvailableLanguages();
+      List<Language> availableLanguages = Language.getAvailableLanguages();
 
-                if (availableLanguages.stream().noneMatch(Language::isDefault)) {
-                  throw new IllegalStateException("No default language found");
-                }
+      getLogger().info("Loading translations for " + availableLanguages.size() + " languages");
+      for (Language language : availableLanguages) {
+        getLogger().info("Loading translations for " + language.getDisplayName());
+      }
 
-                getTranslationCache().invalidateTranslationCache();
-                getUserLanguageCache().invalidateUserLanguageCache();
-              });
+      if (availableLanguages.stream().noneMatch(Language::isDefault)) {
+        throw new IllegalStateException("No default language found");
+      }
+
+      getTranslationCache().invalidateTranslationCache();
+      getUserLanguageCache().invalidateUserLanguageCache();
 
     } catch (Exception e) {
+      getLogger().warning(ExceptionUtils.getStackTrace(e));
       getLogger().severe("Error while reloading TranslationProvider");
     }
+  }
+
+  public void loadTranslationsForUser(UUID uuid) {
+    translationCache.getCache().getUnchecked(userLanguageCache.getUserLanguage(uuid));
+  }
+
+  public void playerLanguage(UUID player, Language language) {
+    userLanguageCache.getCache().put(player, language);
+    new UserDatabaseHelper(player).setUserLanguage(language);
+  }
+
+  public Language playerLanguage(UUID player) {
+    return userLanguageCache.getUserLanguage(player);
   }
 }

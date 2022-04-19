@@ -30,13 +30,14 @@ public class TranslationUtil {
     }
     if (translation.contains("%")) { // Handle Parameters
 
-      if (parameters == null) { //Handle Default Parameters for Unicode Symbols
+      if (parameters == null) { // Handle Default Parameters for Unicode Symbols
         parameters = new HashMap<>(getDefaultParameters());
       } else {
         parameters.putAll(getDefaultParameters());
       }
 
-      for (Map.Entry<String, String> parameter : parameters.entrySet()) { // Replace All Placeholders with Parameters
+      for (Map.Entry<String, String> parameter :
+          parameters.entrySet()) { // Replace All Placeholders with Parameters
         translation = translation.replace("%" + parameter.getKey() + "%", parameter.getValue());
       }
 

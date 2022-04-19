@@ -3,7 +3,6 @@ package eu.tuxcraft.translationprovider.engine.cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import eu.tuxcraft.translationprovider.engine.cache.loaders.UserLanguageCacheLoader;
-import eu.tuxcraft.translationprovider.engine.database.UserDatabaseHelper;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,5 +40,4 @@ public class UserLanguageCache {
     cache.invalidateAll();
     cache.cleanUp();
   }
-
 }

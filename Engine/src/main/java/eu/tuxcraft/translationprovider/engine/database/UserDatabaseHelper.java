@@ -1,6 +1,7 @@
 package eu.tuxcraft.translationprovider.engine.database;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
+import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,36 +29,46 @@ public class UserDatabaseHelper {
 
     AtomicReference<Language> language = new AtomicReference<>();
 
-    TranslationProviderEngine.getInstance()
-        .getThreadPool()
-        .execute(
-            () -> {
-              try (PreparedStatement statement =
-                  connection.prepareStatement(
-                      "SELECT lang_id FROM translation_user WHERE player_uuid = ?")) {
+    try (PreparedStatement statement =
+        connection.prepareStatement("SELECT lang_id FROM translation_user WHERE player_uuid = ?")) {
 
-                statement.setObject(1, userUUID);
+      statement.setObject(1, userUUID);
 
-                String langId = null;
+      String langId = null;
 
-                try (ResultSet resultSet = statement.executeQuery()) {
-                  if (resultSet.next()) {
-                    langId = resultSet.getString("lang_id");
-                  }
-                }
+      try (ResultSet resultSet = statement.executeQuery()) {
+        if (resultSet.next()) {
+          langId = resultSet.getString("lang_id");
+        }
+      }
 
-                String finalLangId = langId;
-                languages.stream()
-                    .filter(l -> l.getIsoCode().equals(finalLangId))
-                    .findFirst()
-                    .ifPresent(language::set);
+      String finalLangId = langId;
+      languages.stream()
+          .filter(l -> l.getIsoCode().equals(finalLangId))
+          .findFirst()
+          .ifPresent(language::set);
 
-              } catch (SQLException e) {
-                TranslationProviderEngine.getInstance()
-                    .getLogger()
-                    .severe(ExceptionUtils.getStackTrace(e));
-              }
-            });
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
     return language.get();
+  }
+
+  public void setUserLanguage(Language language) {
+    try (PreparedStatement statement =
+        connection.prepareStatement(
+            "UPDATE translation_user SET lang_id = ? WHERE player_uuid = ?")) {
+
+      statement.setObject(1, language.getIsoCode());
+      statement.setObject(2, userUUID);
+
+      if (statement.executeUpdate() == 0) {
+        throw new LanguageException(
+            "Could not update language for user " + userUUID + "! Probably not inserted yet!");
+      }
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
   }
 }

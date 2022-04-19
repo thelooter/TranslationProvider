@@ -1,3 +1,5 @@
 target
 .idea
-eu.tuxcraft.translationprovider.spigot.TranslationProviderBukkit.iml
+*.iml
+hs_err_*
+replay_*

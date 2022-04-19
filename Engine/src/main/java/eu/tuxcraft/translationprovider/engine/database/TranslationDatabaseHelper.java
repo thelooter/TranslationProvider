@@ -25,24 +25,17 @@ public class TranslationDatabaseHelper {
 
   public Map<String, String> getTranslationsForProjectKey(String projectKey) {
     AtomicReference<Map<String, String>> translations = new AtomicReference<>();
-    TranslationProviderEngine.getInstance()
-        .getThreadPool()
-        .execute(
-            () -> {
-              try (PreparedStatement preparedStatement =
-                  connection.prepareStatement(
-                      "SELECT translation_key,translation FROM translation_entries WHERE lang_id = ? AND translation_key LIKE ?")) {
-                preparedStatement.setString(1, language.getIsoCode());
-                preparedStatement.setString(2, projectKey + ".%");
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "SELECT translation_key,translation FROM translation_entries WHERE lang_id = ? AND translation_key LIKE ?")) {
+      preparedStatement.setString(1, language.getIsoCode());
+      preparedStatement.setString(2, projectKey + ".%");
 
-                execute(translations, preparedStatement);
+      execute(translations, preparedStatement);
 
-              } catch (SQLException e) {
-                TranslationProviderEngine.getInstance()
-                    .getLogger()
-                    .severe(ExceptionUtils.getStackTrace(e));
-              }
-            });
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
     return translations.get();
   }
 
@@ -65,23 +58,16 @@ public class TranslationDatabaseHelper {
 
   public Map<String, String> getTranslations() {
     AtomicReference<Map<String, String>> translations = new AtomicReference<>();
-    TranslationProviderEngine.getInstance()
-        .getThreadPool()
-        .execute(
-            () -> {
-              try (PreparedStatement preparedStatement =
-                  connection.prepareStatement(
-                      "SELECT translation_key,translation FROM translation_entries WHERE lang_id = ?")) {
-                preparedStatement.setString(1, language.getIsoCode());
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "SELECT translation_key,translation FROM translation_entries WHERE lang_id = ?")) {
+      preparedStatement.setString(1, language.getIsoCode());
 
-                execute(translations, preparedStatement);
+      execute(translations, preparedStatement);
 
-              } catch (SQLException e) {
-                TranslationProviderEngine.getInstance()
-                    .getLogger()
-                    .severe(ExceptionUtils.getStackTrace(e));
-              }
-            });
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
     return translations.get();
   }
 }

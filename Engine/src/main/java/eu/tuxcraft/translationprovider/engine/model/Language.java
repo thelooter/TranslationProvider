@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Language {
 
@@ -31,43 +30,24 @@ public class Language {
     this.isDefault = defaultLanguage;
   }
 
-  static Language fromResultSet(ResultSet resultSet) {
-    try {
-      return new Language(
-          resultSet.getString("iso_code"),
-          resultSet.getString("display_name"),
-          resultSet.getBoolean("enabled"),
-          resultSet.getBoolean("default_language"));
-    } catch (Exception e) {
-      throw new LanguageException("Error while creating language from result set", e);
-    }
-  }
 
   public static List<Language> getAvailableLanguages() {
 
     List<Language> languages = new ArrayList<>();
+    try (PreparedStatement statement =
+        TranslationProviderEngine.getInstance()
+            .getConnection()
+            .prepareStatement(
+                "SELECT iso_code, display_name, is_enabled, is_default FROM translation_languages ORDER BY iso_code ASC")) {
 
-    TranslationProviderEngine.getInstance()
-        .getThreadPool()
-        .execute(
-            () -> {
-              try (PreparedStatement statement =
-                  TranslationProviderEngine.getInstance()
-                      .getConnection()
-                      .prepareStatement(
-                          "SELECT iso_code, display_name, is_enabled, is_default FROM translation_languages ORDER BY iso_code ASC")) {
+      ResultSet resultSet = statement.executeQuery();
 
-                ResultSet resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-                  languages.add(Language.fromResultSet(resultSet));
-                }
-              } catch (SQLException e) {
-                TranslationProviderEngine.getInstance()
-                    .getLogger()
-                    .severe(ExceptionUtils.getStackTrace(e));
-              }
-            });
+      while (resultSet.next()) {
+        languages.add(Language.fromResultSet(resultSet));
+      }
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
     return languages;
   }
 
@@ -77,6 +57,20 @@ public class Language {
         .findFirst()
         .orElseThrow(() -> new LanguageException("No default language found"));
   }
+
+  static Language fromResultSet(ResultSet resultSet) {
+    try {
+      return new Language(
+              resultSet.getString("iso_code"),
+              resultSet.getString("display_name"),
+              resultSet.getBoolean("is_enabled"),
+              resultSet.getBoolean("is_default"));
+    } catch (Exception e) {
+      throw new LanguageException("Error while creating language from result set", e);
+    }
+  }
+
+
 
   @Override
   public String toString() {

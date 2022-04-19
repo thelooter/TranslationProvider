@@ -1,7 +1,7 @@
 package eu.tuxcraft.translationprovider.spigot.model;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
-import eu.tuxcraft.translationprovider.spigot.TranslationProviderBukkit;
+import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,15 +14,11 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class LazyLoadingMessage implements Message {
 
-  TranslationProviderEngine engine = TranslationProviderBukkit.getEngine();
+  TranslationProviderEngine engine = TranslationProvider.getEngine();
 
   String key;
   String prefixKey;
 
-  public LazyLoadingMessage(String key, String prefixKey) {
-    this.key = key;
-    this.prefixKey = prefixKey;
-  }
 
   @Override
   public void sendTo(CommandSender cs) {
