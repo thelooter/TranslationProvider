@@ -1,0 +1,103 @@
+default:
+  image: maven:latest
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  #MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+
+cache:
+  paths:
+    - target/
+
+stages:
+  - compile
+  - test
+  - badges
+  - sonarqube
+  - deploy
+  - docker
+
+
+compile:
+  stage: compile
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
+
+test:
+  stage: test
+  needs:
+    - compile
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+    - cat report-aggregate/target/site/jacoco-aggregate/index.html | grep -o 'Total[^%]*%' | sed 's/<.*>/ /; s/Total/Jacoco Coverage Total:/'
+  coverage: '/Total.*?([0-9]{1,3})%/'
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - Engine/target/surefire-reports/*.xml
+        - Spigot/target/surefire-reports/*.xml
+
+sonarqube:
+  stage: sonarqube
+  needs:
+    - compile
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - mvn $MAVEN_CLI_OPTS verify sonar:sonar
+    - cat report-aggregate/target/site/jacoco-aggregate/index.html | grep -o 'Total[^%]*%' | sed 's/<.*>/ /; s/Total/Jacoco Coverage Total:/'
+  coverage: '/Total.*?([0-9]{1,3})%/'
+  allow_failure: false
+
+
+"Create Badge":
+  stage: badges
+  needs: [ ]
+  image: alpine
+  script:
+    - apk update
+    - apk add python3
+    - apk add py3-pip
+    - apk add maven
+    - apk add libxml2-utils
+    - apk add curl
+    - apk add tar
+    - rm -Rf badges
+    - mkdir badges
+    - cd badges
+    - pip install anybadge
+    - curl -k --header "PRIVATE-TOKEN:i4srw3zRZp3C1qxN9L7w" https://git.plugin-lab.com/api/v4/projects/63/repository/archive\?sha\=${CI_COMMIT_SHA} -o files.tar.gz
+    - tar -xf files.tar.gz
+    - rm files.tar.gz
+    - cd translationprovider-$CI_COMMIT_SHA-$CI_COMMIT_SHA
+    - ls
+    - latest_version=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+    - cd ..
+    - rm -rf translationprovider-$CI_COMMIT_SHA-$CI_COMMIT_SHA
+    - anybadge -l "version" -v $latest_version -f latestVersion.svg --color=#0d7ebe
+  artifacts:
+    paths:
+      - badges/
+    when: always
+
+
+deploy:
+  stage: deploy
+  needs:
+    - test
+    - sonarqube
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+
+docker:
+  stage: docker
+  trigger:
+    project: tuxcraft/tuxcraft-hub-docker-image
+    branch: master
