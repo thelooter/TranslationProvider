@@ -25,28 +25,24 @@ public class TranslationProviderCommand implements CommandExecutor {
     }
 
     switch (args[0]) {
-      case "reload":
-        TranslationProvider.getEngine().performReload();
-        commandSender.sendMessage("Reloading translations...");
-        break;
-      case "stats":
-        commandSender.sendMessage(
-            "TranslationCache: "
-                + TranslationProvider.getEngine().getTranslationCache().getCache().size());
-        commandSender.sendMessage(
-            "LanguageCache: "
-                + TranslationProvider.getEngine().getUserLanguageCache().getCache().size());
-
-        break;
-      case "clear":
-        TranslationProvider.getEngine().getTranslationCache().getCache().invalidateAll();
-        TranslationProvider.getEngine().getUserLanguageCache().getCache().invalidateAll();
-
-        commandSender.sendMessage("Cleared Cache");
-        break;
-      default:
-        commandSender.sendMessage("Possible Options: reload, stats,clear");
-        break;
+    case "reload" -> {
+      TranslationProvider.getEngine().performReload();
+      commandSender.sendMessage("Reloading translations...");
+    }
+    case "stats" -> {
+      commandSender.sendMessage(
+              "TranslationCache: "
+                      + TranslationProvider.getEngine().getTranslationCache().getCache().size());
+      commandSender.sendMessage(
+              "LanguageCache: "
+                      + TranslationProvider.getEngine().getUserLanguageCache().getCache().size());
+    }
+    case "clear" -> {
+      TranslationProvider.getEngine().getTranslationCache().getCache().invalidateAll();
+      TranslationProvider.getEngine().getUserLanguageCache().getCache().invalidateAll();
+      commandSender.sendMessage("Cleared Cache");
+    }
+    default -> commandSender.sendMessage("Possible Options: reload, stats,clear");
     }
     return true;
   }
