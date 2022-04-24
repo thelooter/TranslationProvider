@@ -38,6 +38,13 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>tuxcraft-public</id>
+            <url>https://maven.tuxcraft.eu/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
 
     <build>
         <finalName>TranslationProvider</finalName>
