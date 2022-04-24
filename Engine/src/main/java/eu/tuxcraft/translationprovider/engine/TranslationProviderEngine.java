@@ -16,6 +16,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+/**
+ * Engine for the translation provider. Provides methods for the Implementations to use.
+ *
+ * @author thelooter
+ * @since 2.0.0
+ */
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TranslationProviderEngine {
   @Getter Logger logger;
@@ -26,6 +32,13 @@ public class TranslationProviderEngine {
 
   @Getter static TranslationProviderEngine instance;
 
+  /**
+   * Gets the {@link TranslationProviderEngine} instance
+   *
+   * @param logger The {@link Logger} instance
+   * @param connection The {@link Connection} instance
+   * @since 2.0.0
+   */
   public TranslationProviderEngine(Logger logger, Connection connection) {
     this.logger = logger;
     this.connection = connection;
@@ -33,6 +46,15 @@ public class TranslationProviderEngine {
     instance = this;
   }
 
+  /**
+   * Gets a specific translation for the Player
+   *
+   * @param uuid The {@link UUID} of the Player
+   * @param key The key of the translation
+   * @param parameters The parameters for the translation
+   * @return The translation
+   * @since 2.0.0
+   */
   public String getTranslationForUser(UUID uuid, String key, Map<String, String> parameters) {
     Language language = userLanguageCache.getUserLanguage(uuid);
 
@@ -45,6 +67,11 @@ public class TranslationProviderEngine {
     return new TranslationUtil().translate(key, language, parameters);
   }
 
+  /**
+   * Reloads all the Caches
+   *
+   * @since 2.0.0
+   */
   public void performReload() {
     try {
       getLogger().info("Starting TranslationProvider reload");
@@ -74,15 +101,35 @@ public class TranslationProviderEngine {
     }
   }
 
+  /**
+   * Loads the {@link Language} for the Player
+   *
+   * @param uuid The {@link UUID} of the Player
+   * @since 2.0.0
+   */
   public void loadTranslationsForUser(UUID uuid) {
     translationCache.getCache().getUnchecked(userLanguageCache.getUserLanguage(uuid));
   }
 
+  /**
+   * Sets the {@link Language} for the Player
+   *
+   * @param player The player's {@link UUID}
+   * @param language The new {@link Language}
+   * @since 2.0.0
+   */
   public void playerLanguage(UUID player, Language language) {
     userLanguageCache.getCache().put(player, language);
     new UserDatabaseHelper(player).setUserLanguage(language);
   }
 
+  /**
+   * Gets the @{@link Language} of the Player
+   *
+   * @param player The Player's {@link UUID}
+   * @return The {@link Language} of the Player
+   * @since 2.0.0
+   */
   public Language playerLanguage(UUID player) {
     return userLanguageCache.getUserLanguage(player);
   }

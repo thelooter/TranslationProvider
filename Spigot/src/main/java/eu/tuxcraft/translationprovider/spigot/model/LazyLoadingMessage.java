@@ -10,6 +10,13 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
+/**
+ * Implementation of {@link Message} interface that lazily loads the message from the engine.
+ *
+ * @author thelooter
+ * @see Message
+ * @since 2.0.0
+ */
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class LazyLoadingMessage implements Message {
@@ -19,7 +26,12 @@ public class LazyLoadingMessage implements Message {
   String key;
   String prefixKey;
 
-
+  /**
+   * {@inheritDoc}
+   *
+   * @param cs {@inheritDoc}
+   * @since 2.0.0
+   */
   @Override
   public void sendTo(CommandSender cs) {
     sendTo(cs, Map.of("", ""));

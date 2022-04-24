@@ -16,6 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Utility class for database operations.
+ *
+ * @author thelooter
+ * @since 2.0.0
+ */
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TranslationDatabaseHelper {
@@ -23,6 +29,14 @@ public class TranslationDatabaseHelper {
   Connection connection = TranslationProviderEngine.getInstance().getConnection();
   Language language;
 
+  /**
+   * Returns the translation for the given Project Key and the {@link Language} specified in the
+   * constructor.
+   *
+   * @param projectKey The Project Key.
+   * @return The translation for the given Project Key.
+   * @since 2.0.0
+   */
   public Map<String, String> getTranslationsForProjectKey(String projectKey) {
     AtomicReference<Map<String, String>> translations = new AtomicReference<>();
     try (PreparedStatement preparedStatement =
@@ -39,6 +53,13 @@ public class TranslationDatabaseHelper {
     return translations.get();
   }
 
+  /**
+   * Utility method to execute the prepared statement and return the result.
+   *
+   * @param translations The {@link AtomicReference} to store the result.
+   * @param preparedStatement The {@link PreparedStatement} to execute.
+   * @since 2.0.0
+   */
   private void execute(
       AtomicReference<Map<String, String>> translations, PreparedStatement preparedStatement) {
     try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -56,6 +77,12 @@ public class TranslationDatabaseHelper {
     }
   }
 
+  /**
+   * Returns the translation for the {@link Language} specified in the constructor.
+   *
+   * @return The translation for the {@link Language} specified in the constructor.
+   * @since 2.0.0
+   */
   public Map<String, String> getTranslations() {
     AtomicReference<Map<String, String>> translations = new AtomicReference<>();
     try (PreparedStatement preparedStatement =

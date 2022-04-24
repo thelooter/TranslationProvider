@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ *  This class is responsible for all database operations regarding users.
+ *
+ * @author thelooter
+ * @since 2.0.0
+ */
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserDatabaseHelper {
@@ -23,6 +29,12 @@ public class UserDatabaseHelper {
   Connection connection = TranslationProviderEngine.getInstance().getConnection();
   UUID userUUID;
 
+  /**
+   * Returns the {@link Language} of the user.
+   * @return The {@link Language} of the user.
+   *
+   * @since 2.0.0
+   */
   public Language getUserLanguage() {
 
     List<Language> languages = Language.getAvailableLanguages();
@@ -54,6 +66,12 @@ public class UserDatabaseHelper {
     return language.get();
   }
 
+  /**
+   * Sets the {@link Language} of the user.
+   * @param language The {@link Language} of the user.
+   *
+   * @since 2.0.0
+   */
   public void setUserLanguage(Language language) {
     try (PreparedStatement statement =
         connection.prepareStatement(

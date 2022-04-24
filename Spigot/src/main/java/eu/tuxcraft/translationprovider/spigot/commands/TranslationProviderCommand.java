@@ -6,6 +6,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The main command of the plugin.
+ *
+ * @author thelooter
+ * @since 2.0.0
+ */
 public class TranslationProviderCommand implements CommandExecutor {
   @Override
   public boolean onCommand(

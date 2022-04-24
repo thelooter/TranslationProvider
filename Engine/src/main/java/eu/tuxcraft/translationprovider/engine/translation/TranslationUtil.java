@@ -10,6 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Utility class for translation. Takes care of translation
+ *
+ * @author thelooter
+ * @since 2.0.0
+ */
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TranslationUtil {
@@ -17,6 +23,15 @@ public class TranslationUtil {
   TranslationProviderEngine engine = TranslationProviderEngine.getInstance();
   Logger logger = engine.getLogger();
 
+  /**
+   * Translates a string.
+   *
+   * @param key The key of the string to translate
+   * @param language The language to translate to
+   * @param parameters The parameters to replace in the string
+   * @return The translated string
+   * @since 2.0.0
+   */
   public String translate(String key, Language language, Map<String, String> parameters) {
 
     String translation =
@@ -48,6 +63,14 @@ public class TranslationUtil {
     return translation;
   }
 
+  /**
+   * Calculates the fallback string.
+   *
+   * @param key The key of the string to get the fallback string for
+   * @param parameters The parameters to replace in the string
+   * @return The fallback string
+   * @since 2.0.0
+   */
   private static String getFallBackString(String key, Map<String, String> parameters) {
     if (parameters == null) return key;
 
@@ -65,6 +88,12 @@ public class TranslationUtil {
     return sb.toString();
   }
 
+  /**
+   * Gets the default parameters.
+   * @return The default parameters
+   *
+   * @since 2.0.0
+   */
   private static Map<String, String> getDefaultParameters() {
     Map<String, String> parameters = new HashMap<>();
 

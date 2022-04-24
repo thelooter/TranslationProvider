@@ -15,6 +15,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 
+/**
+ * The main class of the plugin.
+ *
+ * @author thelooter
+ * @since 2.0.0
+ */
 public class TranslationProvider extends JavaPlugin {
 
   @Getter static TranslationProviderEngine engine;
@@ -43,7 +49,14 @@ public class TranslationProvider extends JavaPlugin {
     getLogger().info("TranslationProviderBukkit disabled");
   }
 
-  public static void mapAllTranslations(Class<?> clazz, String keyPrefix)
+  /**
+   * Maps all translations in the given {@link Class} to the engine.
+   *
+   * @param messageClass The {@link Class} to map.
+   * @param keyPrefix The prefix for the keys.
+   * @throws IllegalAccessException If the {@link Field} is not accessible.
+   */
+  public static void mapAllTranslations(Class<?> messageClass, String keyPrefix)
       throws IllegalAccessException {
     if (keyPrefix.endsWith(".")) {
       keyPrefix = keyPrefix.substring(0, keyPrefix.length() - 1);
@@ -51,9 +64,17 @@ public class TranslationProvider extends JavaPlugin {
 
     String prefixKey = keyPrefix + ".prefix";
 
-    mapAllTranslations(clazz, keyPrefix, prefixKey);
+    mapAllTranslations(messageClass, keyPrefix, prefixKey);
   }
 
+  /**
+   * Maps all translations in the given {@link Class} to the engine.
+   *
+   * @param clazz The {@link Class} to map.
+   * @param keyPrefix The prefix for the keys.
+   * @param prefixKey The key for the prefix.
+   * @throws IllegalAccessException If the {@link Field} is not accessible.
+   */
   private static void mapAllTranslations(Class<?> clazz, String keyPrefix, String prefixKey)
       throws IllegalAccessException {
     for (Field field : clazz.getFields()) {
@@ -72,10 +93,22 @@ public class TranslationProvider extends JavaPlugin {
     }
   }
 
+  /**
+   * Sets the {@link Language} of the given {@link Player}.
+   *
+   * @param player The {@link Player}.
+   * @param language The {@link Language}.
+   */
   public static void playerLanguage(Player player, Language language) {
     engine.playerLanguage(player.getUniqueId(), language);
   }
 
+  /**
+   * Gets the {@link Language} of the given {@link Player}.
+   *
+   * @param player The {@link Player}.
+   * @return The {@link Language}.
+   */
   public static Language playerLanguage(Player player) {
     return engine.playerLanguage(player.getUniqueId());
   }
