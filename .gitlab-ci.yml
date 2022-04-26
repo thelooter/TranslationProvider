@@ -73,7 +73,7 @@ sonarqube:
     - mkdir badges
     - cd badges
     - pip install anybadge
-    - curl -k --header "PRIVATE-TOKEN:i4srw3zRZp3C1qxN9L7w" https://git.plugin-lab.com/api/v4/projects/63/repository/archive\?sha\=${CI_COMMIT_SHA} -o files.tar.gz
+    - curl -k --header "PRIVATE-TOKEN:$GITLAB_SECRET_TOKEN" https://git.plugin-lab.com/api/v4/projects/63/repository/archive\?sha\=${CI_COMMIT_SHA} -o files.tar.gz
     - tar -xf files.tar.gz
     - rm files.tar.gz
     - cd translationprovider-$CI_COMMIT_SHA-$CI_COMMIT_SHA
