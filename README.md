@@ -15,7 +15,6 @@ You can use this API by adding the Maven Dependency
 Repository:
 
 ```xml
-
 <repositories>
     <repository>
         <id>tuxcraft-public</id>
@@ -27,7 +26,6 @@ Repository:
 Dependency
 
 ```xml
-
 <dependencies>
     <dependency>
         <groupId>eu.tuxcraft</groupId>
