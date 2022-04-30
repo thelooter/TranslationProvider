@@ -1,6 +1,10 @@
+<div align="center">
+<img src="https://i.ibb.co/890xdWq/translationpriovider.png" alt="TranslationProvider Logo" width="150">
+
 # TranslationProvider
 
 Server Translations for Users
+</div>
 
 ## Installation
 
