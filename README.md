@@ -15,6 +15,7 @@ You can use this API by adding the Maven Dependency
 Repository:
 
 ```xml
+
 <repositories>
     <repository>
         <id>tuxcraft-public</id>
@@ -26,6 +27,7 @@ Repository:
 Dependency
 
 ```xml
+
 <dependencies>
     <dependency>
         <groupId>eu.tuxcraft</groupId>
@@ -96,6 +98,8 @@ public class Main implements JavaPlugin {
 		} catch (Exception ex) {
 			throw new RuntimeException("Could not load messages: " + ex.getMessage(), ex);
 		}
+	}
+}
 ```
 
 #### Create a Class containing all the Messages
