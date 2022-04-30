@@ -15,7 +15,6 @@ You can use this API by adding the Maven Dependency
 Repository:
 
 ```xml
-
 <repositories>
     <repository>
         <id>tuxcraft-public</id>
@@ -27,7 +26,6 @@ Repository:
 Dependency
 
 ```xml
-
 <dependencies>
     <dependency>
         <groupId>eu.tuxcraft</groupId>
@@ -45,8 +43,6 @@ Dependency
 Repository:
 
 ```groovy
-
-
 repositories {
     maven {
         url "https://maven.tuxcraft.eu/repository/maven-public/"
@@ -67,8 +63,6 @@ dependencies {
 Repository:
 
 ```kotlin
-
-
 repositories {
     maven {
         url = uri("https://maven.tuxcraft.eu/repository/maven-public/")
@@ -161,7 +155,7 @@ There are 2 ways you can get a Translation.
 If you want to send the message directly use Message#sendTo(Player)
 
 ```java
-public class Command implements Command {
+public class Command implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(
@@ -179,7 +173,7 @@ public class Command implements Command {
 If you want to just get the String containing the Translation use
 
 ```java
-public class Command implements Command {
+public class Command implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(
