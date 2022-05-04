@@ -17,7 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- *  This class is responsible for all database operations regarding users.
+ * This class is responsible for all database operations regarding users.
  *
  * @author thelooter
  * @since 2.0.0
@@ -31,8 +31,8 @@ public class UserDatabaseHelper {
 
   /**
    * Returns the {@link Language} of the user.
-   * @return The {@link Language} of the user.
    *
+   * @return The {@link Language} of the user.
    * @since 2.0.0
    */
   public Language getUserLanguage() {
@@ -68,8 +68,8 @@ public class UserDatabaseHelper {
 
   /**
    * Sets the {@link Language} of the user.
-   * @param language The {@link Language} of the user.
    *
+   * @param language The {@link Language} of the user.
    * @since 2.0.0
    */
   public void setUserLanguage(Language language) {
