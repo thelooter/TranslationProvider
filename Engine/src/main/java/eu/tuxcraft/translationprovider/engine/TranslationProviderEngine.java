@@ -180,14 +180,25 @@ public class TranslationProviderEngine {
 
   /**
    * Adds a new Translation in a given {@link Language} for a given Translation Key
-   * @param language The {@link Language} to add the Translation to
-   * @param key The Translation Key
-   * @param value The Translation
-   * @return True if the Translation was added, false otherwise
    *
+   * @param language The {@link Language} to add the Translation to
+   * @param key      The Translation Key
+   * @param value    The Translation
+   * @return True if the Translation was added, false otherwise
    * @since 2.1.0
    */
   public boolean addTranslation(Language language, String key, String value) {
     return new TranslationDatabaseHelper(language).addTranslation(key, value);
+  }
+
+  /**
+   * Removes a Language from the {@link TranslationProviderEngine}
+   *
+   * @param lang The {@link Language} to remove
+   * @return True if the {@link Language} was removed, false otherwise
+   * @since 2.1.0
+   */
+  public boolean removeLanguage(Language lang) {
+    return new LanguageDatabaseHelper(logger).removeLanguage(lang);
   }
 }
