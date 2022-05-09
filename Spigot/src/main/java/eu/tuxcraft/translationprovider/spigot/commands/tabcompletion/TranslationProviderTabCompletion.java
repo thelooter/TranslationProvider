@@ -48,10 +48,13 @@ public class TranslationProviderTabCompletion implements TabCompleter {
       @NotNull String s,
       @NotNull String[] args) {
     if (args.length == 1) {
-      return List.of("reload", "stats", "clear", "add", "version", "help");
+      return List.of("reload", "stats", "clear", "add", "version", "help", "remove");
     }
     if (args.length == 2) {
       if (args[0].equalsIgnoreCase("add")) {
+        return List.of("language", "translation");
+      }
+      if (args[0].equalsIgnoreCase("remove")) {
         return List.of("language", "translation");
       } else {
         return Collections.singletonList("Invalid amount of Arguments");
@@ -95,6 +98,10 @@ public class TranslationProviderTabCompletion implements TabCompleter {
       commandSender.sendMessage("6");
 
       return Collections.singletonList("<default>");
+    }
+
+    if (args.length == 3 && args[0].equalsIgnoreCase("remove") && args[1].equalsIgnoreCase("language")) {
+      return Language.getAvailableLanguages().stream().map(Language::getDisplayName).toList();
     }
 
     return Collections.singletonList("Invalid amount of Arguments");
