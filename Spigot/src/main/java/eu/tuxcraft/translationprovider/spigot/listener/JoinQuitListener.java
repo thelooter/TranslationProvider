@@ -1,7 +1,6 @@
 package eu.tuxcraft.translationprovider.spigot.listener;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
-import lombok.AllArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -13,18 +12,24 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * @author thelooter
  * @since 2.0.0
  */
-@AllArgsConstructor
 public class JoinQuitListener implements Listener {
 
-
-
   TranslationProviderEngine engine;
+
+  /**
+   * Creates a new instance of the JoinQuitListener.
+   *
+   * @param engine The {@link TranslationProviderEngine} to use.
+   * @since 2.0.0
+   */
+  public JoinQuitListener(TranslationProviderEngine engine) {
+    this.engine = engine;
+  }
 
   /**
    * Called when a player joins the server.
    *
    * @param event the event that occurred
-   *
    * @since 2.0.0
    */
   @EventHandler
@@ -36,7 +41,6 @@ public class JoinQuitListener implements Listener {
    * Called when a player leaves the server.
    *
    * @param event the event that occurred
-   *
    * @since 2.0.0
    */
   @EventHandler

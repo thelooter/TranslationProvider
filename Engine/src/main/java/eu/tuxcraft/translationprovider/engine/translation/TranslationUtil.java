@@ -2,13 +2,11 @@ package eu.tuxcraft.translationprovider.engine.translation;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 
 /**
  * Utility class for translation. Takes care of translation
@@ -16,7 +14,6 @@ import java.util.logging.Logger;
  * @author thelooter
  * @since 2.0.0
  */
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TranslationUtil {
 
@@ -24,10 +21,18 @@ public class TranslationUtil {
   Logger logger = engine.getLogger();
 
   /**
+   * Creates an Instance of the {@link TranslationUtil}.
+   *
+   * @since 2.0.0
+   */
+  public TranslationUtil() {
+  }
+
+  /**
    * Translates a string.
    *
-   * @param key The key of the string to translate
-   * @param language The language to translate to
+   * @param key        The key of the string to translate
+   * @param language   The language to translate to
    * @param parameters The parameters to replace in the string
    * @return The translated string
    * @since 2.0.0
@@ -66,13 +71,15 @@ public class TranslationUtil {
   /**
    * Calculates the fallback string.
    *
-   * @param key The key of the string to get the fallback string for
+   * @param key        The key of the string to get the fallback string for
    * @param parameters The parameters to replace in the string
    * @return The fallback string
    * @since 2.0.0
    */
   private static String getFallBackString(String key, Map<String, String> parameters) {
-    if (parameters == null) return key;
+    if (parameters == null) {
+      return key;
+    }
 
     StringBuilder sb = new StringBuilder();
 
@@ -90,8 +97,8 @@ public class TranslationUtil {
 
   /**
    * Gets the default parameters.
-   * @return The default parameters
    *
+   * @return The default parameters
    * @since 2.0.0
    */
   private static Map<String, String> getDefaultParameters() {

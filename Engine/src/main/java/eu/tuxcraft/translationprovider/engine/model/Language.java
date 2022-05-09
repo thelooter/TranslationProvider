@@ -2,17 +2,16 @@ package eu.tuxcraft.translationprovider.engine.model;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Represents a Language.
@@ -32,9 +31,9 @@ public class Language {
   /**
    * Constructs a new Language.
    *
-   * @param isoCode the ISO code of the language
-   * @param displayName the display name of the language
-   * @param enabled whether the language is enabled
+   * @param isoCode         the ISO code of the language
+   * @param displayName     the display name of the language
+   * @param enabled         whether the language is enabled
    * @param defaultLanguage whether the language is the default language
    * @since 2.0.0
    */
@@ -58,7 +57,7 @@ public class Language {
         TranslationProviderEngine.getInstance()
             .getConnection()
             .prepareStatement(
-                "SELECT iso_code, display_name, is_enabled, is_default FROM translation_languages ORDER BY iso_code ASC")) {
+                "SELECT iso_code, display_name, is_enabled, is_default FROM translation_languages ORDER BY iso_code ")) {
 
       ResultSet resultSet = statement.executeQuery();
 
@@ -89,16 +88,31 @@ public class Language {
    *
    * @param resultSet The {@link ResultSet} to create the {@link Language} from.
    * @return The created {@link Language}.
-   * @exception SQLException If an error occurs while creating the {@link Language}.
+   * @throws SQLException If an error occurs while creating the {@link Language}.
    * @since 2.0.0
    */
-  static Language fromResultSet(ResultSet resultSet) throws SQLException {
+  public static Language fromResultSet(ResultSet resultSet) throws SQLException {
 
     return new Language(
         resultSet.getString("iso_code"),
         resultSet.getString("display_name"),
         resultSet.getBoolean("is_enabled"),
         resultSet.getBoolean("is_default"));
+  }
+
+  /**
+   * Returns the {@link Language} with the given Display Name.
+   *
+   * @param displayName The Display Name of the {@link Language}.
+   * @return The {@link Language} with the given Display Name.
+   * @since 2.1.0
+   */
+  public static Language fromDisplayName(String displayName) {
+    return getAvailableLanguages().stream()
+        .filter(language -> language.getDisplayName().equals(displayName))
+        .findFirst()
+        .orElseThrow(
+            () -> new LanguageException("No language found with display name " + displayName));
   }
 
   /**
@@ -131,8 +145,12 @@ public class Language {
    */
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Language language = (Language) o;
     return enabled == language.enabled
         && isDefault == language.isDefault

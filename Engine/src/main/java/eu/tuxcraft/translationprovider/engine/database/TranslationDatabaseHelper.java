@@ -2,11 +2,6 @@ package eu.tuxcraft.translationprovider.engine.database;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +10,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Utility class for database operations.
@@ -22,12 +20,21 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author thelooter
  * @since 2.0.0
  */
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TranslationDatabaseHelper {
 
   Connection connection = TranslationProviderEngine.getInstance().getConnection();
   Language language;
+
+  /**
+   * Creates a new {@link TranslationDatabaseHelper} instance.
+   *
+   * @param language The {@link Language} to use.
+   * @since 2.0.0
+   */
+  public TranslationDatabaseHelper(Language language) {
+    this.language = language;
+  }
 
   /**
    * Returns the translation for the given Project Key and the {@link Language} specified in the
@@ -56,7 +63,7 @@ public class TranslationDatabaseHelper {
   /**
    * Utility method to execute the prepared statement and return the result.
    *
-   * @param translations The {@link AtomicReference} to store the result.
+   * @param translations      The {@link AtomicReference} to store the result.
    * @param preparedStatement The {@link PreparedStatement} to execute.
    * @since 2.0.0
    */
@@ -97,4 +104,29 @@ public class TranslationDatabaseHelper {
     }
     return translations.get();
   }
+
+  /**
+   * Adds the given translation to the database.
+   * @param key The key to add.
+   * @param value The value to add.
+   * @return True if the translation was added, false otherwise.
+   *
+   * @since 2.1.0
+   */
+  public boolean addTranslation(String key, String value) {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(
+        "INSERT INTO translation_entries (lang_id, translation_key, translation) VALUES (?, ?, ?)")) {
+
+      preparedStatement.setString(1, language.getIsoCode());
+      preparedStatement.setString(2, key);
+      preparedStatement.setString(3, value);
+
+      return preparedStatement.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+    return false;
+  }
+
 }

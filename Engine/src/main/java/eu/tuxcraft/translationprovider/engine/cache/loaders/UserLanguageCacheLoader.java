@@ -17,6 +17,14 @@ import java.util.UUID;
 public class UserLanguageCacheLoader extends CacheLoader<UUID, Language> {
 
   /**
+   * Creates a new instance of {@link UserLanguageCacheLoader}.
+   * @since 2.0.0
+   */
+  public UserLanguageCacheLoader() {
+    super();
+  }
+
+  /**
    * {@inheritDoc}
    *
    * @param userUUID The {@link UUID} of the user.

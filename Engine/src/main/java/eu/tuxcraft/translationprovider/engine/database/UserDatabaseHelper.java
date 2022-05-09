@@ -3,11 +3,6 @@ package eu.tuxcraft.translationprovider.engine.database;
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
 import eu.tuxcraft.translationprovider.engine.model.Language;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +10,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * This class is responsible for all database operations regarding users.
@@ -22,12 +20,21 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author thelooter
  * @since 2.0.0
  */
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserDatabaseHelper {
 
   Connection connection = TranslationProviderEngine.getInstance().getConnection();
   UUID userUUID;
+
+  /**
+   * Creates a new instance of the {@link UserDatabaseHelper} class.
+   *
+   * @param userUUID The {@link UUID} of the user.
+   * @since 2.0.0
+   */
+  public UserDatabaseHelper(UUID userUUID) {
+    this.userUUID = userUUID;
+  }
 
   /**
    * Returns the {@link Language} of the user.
