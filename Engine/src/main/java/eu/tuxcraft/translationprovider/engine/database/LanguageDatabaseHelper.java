@@ -4,6 +4,7 @@ import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -106,5 +107,21 @@ public class LanguageDatabaseHelper {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
     }
     return false;
+  }
+
+  public Language getDefaultLanguage() {
+    try (PreparedStatement selectStatement =
+        connection.prepareStatement(
+            "SELECT * FROM translation_languages WHERE is_default = true")) {
+
+      try (ResultSet resultSet = selectStatement.executeQuery()) {
+        if (resultSet.next()) {
+          return Language.fromResultSet(resultSet);
+        }
+      }
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+    return null;
   }
 }

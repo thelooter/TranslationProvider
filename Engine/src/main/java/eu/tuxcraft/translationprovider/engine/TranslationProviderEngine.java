@@ -201,4 +201,10 @@ public class TranslationProviderEngine {
   public boolean removeLanguage(Language lang) {
     return new LanguageDatabaseHelper(logger).removeLanguage(lang);
   }
+
+
+  public void setDefaultLanguage(UUID uniqueId) {
+    new UserDatabaseHelper(uniqueId).setUserLanguage(
+        new LanguageDatabaseHelper(logger).getDefaultLanguage());
+  }
 }
