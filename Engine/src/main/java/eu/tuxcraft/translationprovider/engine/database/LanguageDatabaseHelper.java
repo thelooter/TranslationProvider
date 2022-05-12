@@ -109,6 +109,12 @@ public class LanguageDatabaseHelper {
     return false;
   }
 
+  /**
+   * Gets the default language.
+   *
+   * @return The default {@link Language} or null if none is set.
+   * @since 2.1.0
+   */
   public Language getDefaultLanguage() {
     try (PreparedStatement selectStatement =
         connection.prepareStatement(

@@ -202,7 +202,12 @@ public class TranslationProviderEngine {
     return new LanguageDatabaseHelper(logger).removeLanguage(lang);
   }
 
-
+  /**
+   * Sets the default {@link Language} for the given User
+   *
+   * @param uniqueId The {@link UUID} of the User
+   * @since 2.1.0
+   */
   public void setDefaultLanguage(UUID uniqueId) {
     new UserDatabaseHelper(uniqueId).setUserLanguage(
         new LanguageDatabaseHelper(logger).getDefaultLanguage());
