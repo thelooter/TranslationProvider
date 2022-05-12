@@ -2,7 +2,7 @@ default:
   image: maven:latest
 
 variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml -Dtuxcraft.repo.username=$NEXUS_DEPLOY_USER -Dtuxcraft.repo.password=$NEXUS_DEPLOY_PASSWORD --batch-mode"
 
 
 cache:
