@@ -82,12 +82,7 @@ public class TranslationProviderTabCompletion implements TabCompleter {
         }
       }
       if (args[0].equalsIgnoreCase(REMOVE_KEY)) {
-        if (args[1].equalsIgnoreCase(TRANSLATION_KEY)) {
-
-        }
-        if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
-          return Language.getAvailableLanguages().stream().map(Language::getDisplayName).toList();
-        }
+        return Language.getAvailableLanguages().stream().map(Language::getDisplayName).toList();
       }
     }
 
@@ -100,6 +95,9 @@ public class TranslationProviderTabCompletion implements TabCompleter {
         if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
           return Collections.singletonList("<display-name>");
         }
+      }
+      if (args[0].equalsIgnoreCase(REMOVE_KEY) && args[1].equalsIgnoreCase(TRANSLATION_KEY)) {
+        return engine.getAllRegisteredKeys();
       }
     }
 

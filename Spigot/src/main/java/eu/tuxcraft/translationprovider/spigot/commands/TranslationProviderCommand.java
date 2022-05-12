@@ -6,6 +6,7 @@ import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercomman
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.add.AddTranslationSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.help.HelpSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove.RemoveLanguageSubCommand;
+import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove.RemoveTranslationSubCommand;
 import java.util.logging.Logger;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.Command;
@@ -79,7 +80,7 @@ public class TranslationProviderCommand implements CommandExecutor {
           new RemoveLanguageSubCommand(engine, args, commandSender);
         }
         if (args[1].equals("translation")) {
-          //TODO RemoveTranslationSubCommand
+          new RemoveTranslationSubCommand(engine, args, commandSender);
         }
       }
       case "version" -> {
