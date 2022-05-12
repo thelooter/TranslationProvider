@@ -207,4 +207,16 @@ public class TranslationProviderEngine {
     new UserDatabaseHelper(uniqueId).setUserLanguage(
         new LanguageDatabaseHelper(logger).getDefaultLanguage());
   }
+
+  /**
+   * Removes a Translation from a given {@link Language} for a given Translation Key
+   *
+   * @param language The {@link Language} to remove the Translation from
+   * @param key      The Translation Key
+   * @return True if the Translation was removed, false otherwise
+   * @since 2.1.0
+   */
+  public boolean removeTranslation(Language language, String key) {
+    return new TranslationDatabaseHelper(language).removeTranslation(key);
+  }
 }
