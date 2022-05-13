@@ -8,11 +8,17 @@ import eu.tuxcraft.translationprovider.spigot.commands.tabcompletion.Translation
 import eu.tuxcraft.translationprovider.spigot.listener.JoinQuitListener;
 import eu.tuxcraft.translationprovider.spigot.model.LazyLoadingMessage;
 import eu.tuxcraft.translationprovider.spigot.model.Message;
+import java.io.File;
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 /**
  * The main class of the plugin.
@@ -22,13 +28,20 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class TranslationProvider extends JavaPlugin {
 
+  Connection connection;
+
   /**
    * Creates a new Instance of the {@link TranslationProvider}.
    *
    * @since 2.0.0
    */
   public TranslationProvider() {
-    // Constructor exists for the purpose of completeness.
+    super();
+  }
+
+  protected TranslationProvider(JavaPluginLoader loader, PluginDescriptionFile descriptionFile,
+      File dataFolder, File file) {
+    super(loader, descriptionFile, dataFolder, file);
   }
 
   @Getter
@@ -41,7 +54,21 @@ public class TranslationProvider extends JavaPlugin {
   @SneakyThrows
   public void onEnable() {
     instance = this;
-    engine = new TranslationProviderEngine(getLogger(), DatabaseProvider.getConnection());
+
+    // Load Config
+    loadConfig();
+
+    try {
+      connection = DatabaseProvider.getConnection();
+    } catch (Exception e) {
+      getLogger().info("Could not connect to the database with DatabaseProvider, using fallback");
+      connection = DriverManager.getConnection(
+          Objects.requireNonNull(getConfig().getString("fallback.sql.jdbcUrl")),
+          getConfig().getString("fallback.sql.username"),
+          getConfig().getString("fallback.sql.password"));
+    }
+
+    engine = new TranslationProviderEngine(getLogger(), connection);
 
     engine.performReload();
 
@@ -131,5 +158,10 @@ public class TranslationProvider extends JavaPlugin {
    */
   public static Language playerLanguage(Player player) {
     return engine.playerLanguage(player.getUniqueId());
+  }
+
+  private void loadConfig() {
+    getConfig().options().copyDefaults(true);
+    saveConfig();
   }
 }
