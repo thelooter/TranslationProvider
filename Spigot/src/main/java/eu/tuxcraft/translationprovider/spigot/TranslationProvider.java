@@ -33,12 +33,12 @@ public class TranslationProvider extends JavaPlugin {
   /**
    * Creates a new Instance of the {@link TranslationProvider}.
    *
+   * @param loader The {@link JavaPluginLoader}.
+   * @param descriptionFile   The {@link PluginDescriptionFile}.
+   * @param dataFolder The Datafolder of the {@link JavaPlugin}.
+   * @param file The File of the {@link JavaPlugin}.
    * @since 2.0.0
    */
-  public TranslationProvider() {
-    super();
-  }
-
   protected TranslationProvider(JavaPluginLoader loader, PluginDescriptionFile descriptionFile,
       File dataFolder, File file) {
     super(loader, descriptionFile, dataFolder, file);
@@ -65,8 +65,7 @@ public class TranslationProvider extends JavaPlugin {
       connection = DriverManager.getConnection(
           Objects.requireNonNull(getConfig().getString("fallback.sql.jdbcUrl")),
           getConfig().getString("fallback.sql.username"),
-          getConfig().getString("fallback.sql.password"));
-    }
+          getConfig().getString("fallback.sql.password"));}
 
     engine = new TranslationProviderEngine(getLogger(), connection);
 
