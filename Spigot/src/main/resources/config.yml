@@ -1,0 +1,5 @@
+fallback:
+  sql:
+    jdbcUrl: jdbc:postgresql://10.1.3.120:5432/tuxcraft-test
+    username: tuxcraft-dev
+    password: tuxcraft-dev
