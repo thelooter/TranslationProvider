@@ -125,7 +125,7 @@ public class TranslationProvider extends JavaPlugin {
       if (!field.isAccessible()) {
         field.setAccessible(true);
       }
-
+      getInstance().getLogger().info(keyPrefix);
       field.set(null, new LazyLoadingMessage(keyPrefix + "." + field.getName(), prefixKey));
       engine.registerKey(keyPrefix + "." + field.getName());
     }

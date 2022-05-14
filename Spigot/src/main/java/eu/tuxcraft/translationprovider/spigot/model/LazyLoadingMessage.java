@@ -120,6 +120,7 @@ public class LazyLoadingMessage implements Message {
         return Component.text(engine.getTranslationForUser(null, key, params));
       }
     }
+    }
 
-  }
+
 }

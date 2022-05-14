@@ -1,5 +1,4 @@
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -39,16 +38,6 @@ class TranslationProviderTest {
     plugin.onDisable();
   }
 
-  @Test
-  void testGetPlayerLanguage() {
-    PlayerMock player = new PlayerMock(server, "thelooter2204",
-        UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
-
-    TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
-
-    assertThat(TranslationProvider.playerLanguage(player), equalTo(Language.fromDisplayName("English")));
-    
-  }
 
   @SneakyThrows
   @Test
