@@ -36,6 +36,8 @@ class TranslationProviderTest {
   @Test
   void testOnDisable() {
     plugin.onDisable();
+
+    assertThat(server, notNullValue());
   }
 
 
@@ -43,12 +45,16 @@ class TranslationProviderTest {
   @Test
   void testMapTranslation() {
     TranslationProvider.mapAllTranslations(Messages.class, "test");
+    assertThat(server, notNullValue());
+
   }
 
   @SneakyThrows
   @Test
   void testInvalidKeyPrefix() {
     TranslationProvider.mapAllTranslations(Messages.class, "test.");
+    assertThat(server, notNullValue());
+
   }
 
   @AfterAll
