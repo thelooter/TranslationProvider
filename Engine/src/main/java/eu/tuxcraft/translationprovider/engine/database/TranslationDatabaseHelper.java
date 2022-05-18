@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -20,11 +21,12 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  * @author thelooter
  * @since 2.0.0
  */
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TranslationDatabaseHelper {
 
-  Connection connection = TranslationProviderEngine.getInstance().getConnection();
-  Language language;
+  final Connection connection = TranslationProviderEngine.getInstance().getConnection();
+  Language language = null;
 
   /**
    * Creates a new {@link TranslationDatabaseHelper} instance.
@@ -34,6 +36,26 @@ public class TranslationDatabaseHelper {
    */
   public TranslationDatabaseHelper(Language language) {
     this.language = language;
+  }
+
+  /**
+   * Creates the Tables for the Entries Database.
+   *
+   * @since 2.1.0
+   */
+  public void createTables() {
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "CREATE TABLE IF NOT EXISTS translation_entries "
+                + "(lang_id VARCHAR(6) NOT NULL, translation_key VARCHAR(64) NOT NULL,"
+                + "translation TEXT,"
+                + "PRIMARY KEY (lang_id, translation_key),"
+                + "FOREIGN KEY (lang_id) REFERENCES languages(iso_code) ON DELETE NO ACTION ON UPDATE NO ACTION ),"
+                + "")) {
+      preparedStatement.execute();
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
   }
 
   /**
@@ -107,10 +129,10 @@ public class TranslationDatabaseHelper {
 
   /**
    * Adds the given translation to the database.
-   * @param key The key to add.
+   *
+   * @param key   The key to add.
    * @param value The value to add.
    * @return True if the translation was added, false otherwise.
-   *
    * @since 2.1.0
    */
   public boolean addTranslation(String key, String value) {

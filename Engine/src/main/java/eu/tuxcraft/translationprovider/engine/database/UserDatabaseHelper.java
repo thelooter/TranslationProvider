@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -20,11 +21,12 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  * @author thelooter
  * @since 2.0.0
  */
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDatabaseHelper {
 
-  Connection connection = TranslationProviderEngine.getInstance().getConnection();
-  UUID userUUID;
+  final Connection connection = TranslationProviderEngine.getInstance().getConnection();
+  UUID userUUID = null;
 
   /**
    * Creates a new instance of the {@link UserDatabaseHelper} class.
@@ -34,6 +36,21 @@ public class UserDatabaseHelper {
    */
   public UserDatabaseHelper(UUID userUUID) {
     this.userUUID = userUUID;
+  }
+
+  /**
+   * Creates the Tables for the User Database.
+   *
+   * @since 2.1.0
+   */
+  public void createTables() {
+    try (PreparedStatement statement =
+        connection.prepareStatement(
+            "CREATE TABLE IF NOT EXISTS translation_user (player_uuid VARCHAR(36) PRIMARY KEY, lang_id VARCHAR(6))")) {
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
   }
 
   /**

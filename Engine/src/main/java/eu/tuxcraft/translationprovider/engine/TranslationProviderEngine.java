@@ -52,6 +52,11 @@ public class TranslationProviderEngine {
     this.connection = connection;
 
     instance = this;
+
+    new LanguageDatabaseHelper(logger).createTables();
+    new TranslationDatabaseHelper().createTables();
+    new UserDatabaseHelper().createTables();
+    new KeyDatabaseHelper(logger).createTables();
   }
 
   /**
