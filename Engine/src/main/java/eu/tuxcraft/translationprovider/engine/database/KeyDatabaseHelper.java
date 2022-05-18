@@ -31,6 +31,22 @@ public class KeyDatabaseHelper {
   }
 
   /**
+   * Creates the tables for the key database.
+   *
+   * @since 2.1.0
+   */
+  public void createTables() {
+    try (PreparedStatement preparedStatement = connection.prepareStatement(
+        "CREATE TABLE IF NOT EXISTS translation_keys (key VARCHAR PRIMARY KEY)")) {
+
+      preparedStatement.executeUpdate();
+
+    } catch (SQLException e) {
+     logger.severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
+
+  /**
    * Inserts a new Key into the database.
    *
    * @param key The Key to insert.
@@ -46,7 +62,7 @@ public class KeyDatabaseHelper {
 
       return preparedStatement.executeUpdate() > 0;
     } catch (SQLException e) {
-      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+      logger.severe(ExceptionUtils.getStackTrace(e));
     }
     return false;
   }

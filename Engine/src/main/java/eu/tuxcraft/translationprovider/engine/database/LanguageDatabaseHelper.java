@@ -31,6 +31,22 @@ public class LanguageDatabaseHelper {
   }
 
   /**
+   * Creates the tables for the language database.
+   *
+   * @since 2.1.0
+   */
+  public void createTables() {
+    try (PreparedStatement createStatement =
+        connection.prepareStatement(
+            "CREATE TABLE IF NOT EXISTS translation_languages (iso_code VARCHAR(2) PRIMARY KEY,"
+                + " display_name VARCHAR(255), is_enabled BOOLEAN, is_default BOOLEAN)")) {
+      createStatement.executeUpdate();
+    } catch (SQLException exception) {
+      logger.severe(ExceptionUtils.getStackTrace(exception));
+    }
+  }
+
+  /**
    * Adds a new language to the database.
    *
    * @param language The {@link Language} to add.
