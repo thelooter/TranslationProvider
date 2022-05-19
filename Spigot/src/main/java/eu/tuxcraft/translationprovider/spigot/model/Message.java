@@ -1,10 +1,9 @@
 package eu.tuxcraft.translationprovider.spigot.model;
 
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
-
-import java.util.Map;
 
 /**
  * Interface for a message.

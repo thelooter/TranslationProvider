@@ -1,12 +1,12 @@
 name: TranslationProvider
-version: 2.0.0
+version: 2.1.0-SNAPSHOT
 main: eu.tuxcraft.translationprovider.spigot.TranslationProvider
 api-version: '1.18'
-authors: [thelooter,Tuxgamer]
+authors: [ thelooter,Tuxgamer ]
 description: Provides translations for plugins
-depend: [DatabaseProviderPaper]
+depend: [ DatabaseProviderPaper ]
 
 commands:
   translationprovider:
     description: "TranslationProvider command"
-    aliases: [tlp,transprov,translate,translateprovider]
+    aliases: [ tlp,transprov,translate,translateprovider ]

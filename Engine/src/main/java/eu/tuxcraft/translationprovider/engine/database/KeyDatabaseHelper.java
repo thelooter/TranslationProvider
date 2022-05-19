@@ -36,13 +36,14 @@ public class KeyDatabaseHelper {
    * @since 2.1.0
    */
   public void createTables() {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(
-        "CREATE TABLE IF NOT EXISTS translation_keys (key VARCHAR PRIMARY KEY)")) {
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "CREATE TABLE IF NOT EXISTS translation_keys (key VARCHAR PRIMARY KEY)")) {
 
       preparedStatement.executeUpdate();
 
     } catch (SQLException e) {
-     logger.severe(ExceptionUtils.getStackTrace(e));
+      logger.severe(ExceptionUtils.getStackTrace(e));
     }
   }
 
@@ -74,8 +75,8 @@ public class KeyDatabaseHelper {
    * @since 2.1.0
    */
   public List<String> getAllRegisteredKeys() {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(
-        "SELECT * FROM translation_keys")) {
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement("SELECT * FROM translation_keys")) {
 
       try (var resultSet = preparedStatement.executeQuery()) {
         List<String> keys = new java.util.ArrayList<>();
@@ -92,7 +93,5 @@ public class KeyDatabaseHelper {
     }
 
     return Collections.emptyList();
-
   }
-
 }

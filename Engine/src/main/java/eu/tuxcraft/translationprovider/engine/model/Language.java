@@ -31,9 +31,9 @@ public class Language {
   /**
    * Constructs a new Language.
    *
-   * @param isoCode         the ISO code of the language
-   * @param displayName     the display name of the language
-   * @param enabled         whether the language is enabled
+   * @param isoCode the ISO code of the language
+   * @param displayName the display name of the language
+   * @param enabled whether the language is enabled
    * @param defaultLanguage whether the language is the default language
    * @since 2.0.0
    */

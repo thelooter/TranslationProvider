@@ -27,23 +27,18 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TranslationProviderEngine {
 
-  @Getter
-  Logger logger;
-  @Getter
-  Connection connection;
+  @Getter Logger logger;
+  @Getter Connection connection;
 
-  @Getter
-  UserLanguageCache userLanguageCache = new UserLanguageCache();
-  @Getter
-  TranslationCache translationCache = new TranslationCache();
+  @Getter UserLanguageCache userLanguageCache = new UserLanguageCache();
+  @Getter TranslationCache translationCache = new TranslationCache();
 
-  @Getter
-  static TranslationProviderEngine instance;
+  @Getter static TranslationProviderEngine instance;
 
   /**
    * Gets the {@link TranslationProviderEngine} instance
    *
-   * @param logger     The {@link Logger} instance
+   * @param logger The {@link Logger} instance
    * @param connection The {@link Connection} instance
    * @since 2.0.0
    */
@@ -62,18 +57,20 @@ public class TranslationProviderEngine {
   /**
    * Gets a specific translation for the Player
    *
-   * @param uuid       The {@link UUID} of the Player
-   * @param key        The key of the translation
+   * @param uuid The {@link UUID} of the Player
+   * @param key The key of the translation
    * @param parameters The parameters for the translation
    * @return The translation
    * @since 2.0.0
    */
   public String getTranslationForUser(UUID uuid, String key, Map<String, String> parameters) {
-    Language language = userLanguageCache.getUserLanguage(uuid);
 
     if (uuid == null) {
       return new TranslationUtil().translate(key, Language.getDefaultLanguage(), parameters);
     }
+
+    Language language = userLanguageCache.getUserLanguage(uuid);
+
     if (language == null) {
       return "";
     }
@@ -131,7 +128,7 @@ public class TranslationProviderEngine {
   /**
    * Sets the {@link Language} for the Player
    *
-   * @param player   The player's {@link UUID}
+   * @param player The player's {@link UUID}
    * @param language The new {@link Language}
    * @since 2.0.0
    */
@@ -187,8 +184,8 @@ public class TranslationProviderEngine {
    * Adds a new Translation in a given {@link Language} for a given Translation Key
    *
    * @param language The {@link Language} to add the Translation to
-   * @param key      The Translation Key
-   * @param value    The Translation
+   * @param key The Translation Key
+   * @param value The Translation
    * @return True if the Translation was added, false otherwise
    * @since 2.1.0
    */
@@ -214,15 +211,15 @@ public class TranslationProviderEngine {
    * @since 2.1.0
    */
   public void setDefaultLanguage(UUID uniqueId) {
-    new UserDatabaseHelper(uniqueId).setUserLanguage(
-        new LanguageDatabaseHelper(logger).getDefaultLanguage());
+    new UserDatabaseHelper(uniqueId)
+        .setUserLanguage(new LanguageDatabaseHelper(logger).getDefaultLanguage());
   }
 
   /**
    * Removes a Translation from a given {@link Language} for a given Translation Key
    *
    * @param language The {@link Language} to remove the Translation from
-   * @param key      The Translation Key
+   * @param key The Translation Key
    * @return True if the Translation was removed, false otherwise
    * @since 2.1.0
    */

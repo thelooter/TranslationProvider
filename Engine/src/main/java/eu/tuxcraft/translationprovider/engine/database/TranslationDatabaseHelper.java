@@ -50,8 +50,7 @@ public class TranslationDatabaseHelper {
                 + "(lang_id VARCHAR(6) NOT NULL, translation_key VARCHAR(64) NOT NULL,"
                 + "translation TEXT,"
                 + "PRIMARY KEY (lang_id, translation_key),"
-                + "FOREIGN KEY (lang_id) REFERENCES languages(iso_code) ON DELETE NO ACTION ON UPDATE NO ACTION ),"
-                + "")) {
+                + "FOREIGN KEY (lang_id) REFERENCES languages(iso_code) ON DELETE NO ACTION ON UPDATE NO ACTION )")) {
       preparedStatement.execute();
     } catch (SQLException e) {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
@@ -85,7 +84,7 @@ public class TranslationDatabaseHelper {
   /**
    * Utility method to execute the prepared statement and return the result.
    *
-   * @param translations      The {@link AtomicReference} to store the result.
+   * @param translations The {@link AtomicReference} to store the result.
    * @param preparedStatement The {@link PreparedStatement} to execute.
    * @since 2.0.0
    */
@@ -130,14 +129,15 @@ public class TranslationDatabaseHelper {
   /**
    * Adds the given translation to the database.
    *
-   * @param key   The key to add.
+   * @param key The key to add.
    * @param value The value to add.
    * @return True if the translation was added, false otherwise.
    * @since 2.1.0
    */
   public boolean addTranslation(String key, String value) {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(
-        "INSERT INTO translation_entries (lang_id, translation_key, translation) VALUES (?, ?, ?)")) {
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "INSERT INTO translation_entries (lang_id, translation_key, translation) VALUES (?, ?, ?)")) {
 
       preparedStatement.setString(1, language.getIsoCode());
       preparedStatement.setString(2, key);
@@ -159,14 +159,14 @@ public class TranslationDatabaseHelper {
    * @since 2.1.0
    */
   public boolean removeTranslation(String key) {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(
-        "DELETE FROM translation_entries WHERE lang_id = ? AND translation_key = ?")) {
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "DELETE FROM translation_entries WHERE lang_id = ? AND translation_key = ?")) {
 
       preparedStatement.setString(1, language.getIsoCode());
       preparedStatement.setString(2, key);
 
       return preparedStatement.executeUpdate() > 0;
-
 
     } catch (SQLException e) {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));

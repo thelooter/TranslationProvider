@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,19 +24,16 @@ public class LazyLoadingMessage implements Message {
   TranslationProviderEngine engine = TranslationProvider.getEngine();
 
   String key;
-  String prefixKey;
 
 
   /**
    * Constructs a new {@link LazyLoadingMessage} instance.
    *
-   * @param key       the key of the message
-   * @param prefixKey the key of the prefix
+   * @param key the key of the message
    * @since 2.0.0
    */
-  public LazyLoadingMessage(String key, String prefixKey) {
+  public LazyLoadingMessage(String key) {
     this.key = key;
-    this.prefixKey = prefixKey;
   }
 
   /**
@@ -46,44 +44,63 @@ public class LazyLoadingMessage implements Message {
    */
   @Override
   public void sendTo(CommandSender cs) {
-    sendTo(cs, Map.of("", ""));
+    sendTo(cs, null);
   }
 
+
+  /**
+   * Sends the translation to the given {@link CommandSender}
+   *
+   * @param cs     the {@link CommandSender} to send the translation to
+   * @param params the {@link Map} with replacements to apply
+   * @since 2.0.0
+   */
   @Override
   public void sendTo(CommandSender cs, Map<String, String> params) {
 
     String translation;
-    String prefix;
 
     if (cs instanceof Player player) {
       translation = engine.getTranslationForUser(player.getUniqueId(), key, params);
-      prefix = engine.getTranslationForUser(player.getUniqueId(), prefixKey, params);
 
     } else {
       translation = engine.getTranslationForUser(null, key, params);
-      prefix = engine.getTranslationForUser(null, prefixKey, params);
-    }
-
-    if (prefix == null) {
-      prefix = "";
     }
 
     if (translation.contains("\n")) {
       for (String line : translation.split("\n")) {
-        cs.sendMessage(prefix + line);
+        Component miniMessage = MiniMessage.miniMessage().deserialize(line);
+        String convertedLine = LegacyComponentSerializer.legacySection().serialize(miniMessage);
+        cs.sendMessage(convertedLine);
       }
     } else {
-      cs.sendMessage(prefix + translation);
+      Component miniMessage = MiniMessage.miniMessage().deserialize(translation);
+      String convertedMessage = LegacyComponentSerializer.legacySection().serialize(miniMessage);
+      cs.sendMessage(convertedMessage);
     }
 
   }
 
+
+  /**
+   * Gets the translation for the given {@link CommandSender}
+   *
+   * @param cs the {@link CommandSender} to get the translation for
+   * @return the translation
+   */
   @Override
   public String getFor(CommandSender cs) {
 
     return getFor(cs, null);
   }
 
+  /**
+   * Gets the translation for the given {@link CommandSender}
+   *
+   * @param cs     the {@link CommandSender} to get the translation for
+   * @param params the replacements to use
+   * @return the translation
+   */
   @Override
   public String getFor(CommandSender cs, Map<String, String> params) {
     if (cs instanceof Player player) {
@@ -93,6 +110,13 @@ public class LazyLoadingMessage implements Message {
     }
   }
 
+  /**
+   * Gets the translation as a {@link Component} for the given {@link CommandSender}
+   *
+   * @param cs            the {@link CommandSender} to get the translation for
+   * @param isMiniMessage whether the Translation should be parsed as a {@link MiniMessage}
+   * @return the translation as a {@link Component}
+   */
   @Override
   public Component getComponentFor(CommandSender cs, boolean isMiniMessage) {
     if (isMiniMessage) {
@@ -102,6 +126,14 @@ public class LazyLoadingMessage implements Message {
     }
   }
 
+  /**
+   * Gets the translation as a {@link Component} for the given {@link CommandSender}
+   *
+   * @param cs            the {@link CommandSender} to get the translation for
+   * @param params        the replacements to use
+   * @param isMiniMessage whether the Translation should be parsed as a {@link MiniMessage}
+   * @return the translation as a {@link Component}
+   */
   @Override
   public Component getComponentFor(CommandSender cs, Map<String, String> params,
       boolean isMiniMessage) {
@@ -120,7 +152,6 @@ public class LazyLoadingMessage implements Message {
         return Component.text(engine.getTranslationForUser(null, key, params));
       }
     }
-    }
-
+  }
 
 }

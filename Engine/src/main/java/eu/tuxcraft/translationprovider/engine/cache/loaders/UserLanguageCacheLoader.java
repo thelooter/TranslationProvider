@@ -4,9 +4,8 @@ import com.google.common.cache.CacheLoader;
 import eu.tuxcraft.translationprovider.engine.cache.UserLanguageCache;
 import eu.tuxcraft.translationprovider.engine.database.UserDatabaseHelper;
 import eu.tuxcraft.translationprovider.engine.model.Language;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link CacheLoader} for the {@link UserLanguageCache}.
@@ -18,6 +17,7 @@ public class UserLanguageCacheLoader extends CacheLoader<UUID, Language> {
 
   /**
    * Creates a new instance of {@link UserLanguageCacheLoader}.
+   *
    * @since 2.0.0
    */
   public UserLanguageCacheLoader() {
