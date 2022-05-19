@@ -29,12 +29,12 @@ public class AddTranslationSubCommand {
    *
    * @param logger The {@link Logger} to use.
    * @param engine The {@link TranslationProviderEngine} to use.
-   * @param args   The arguments to use.
+   * @param args The arguments to use.
    * @param sender The {@link CommandSender} to use.
    * @since 2.1.0
    */
-  public AddTranslationSubCommand(Logger logger, TranslationProviderEngine engine, String[] args,
-      CommandSender sender) {
+  public AddTranslationSubCommand(
+      Logger logger, TranslationProviderEngine engine, String[] args, CommandSender sender) {
     this.logger = logger;
     this.engine = engine;
     this.sender = sender;
@@ -50,8 +50,9 @@ public class AddTranslationSubCommand {
    */
   private void executeAddTranslationSubCommand(String[] args) {
     if (args.length != 5) {
-      sender.sendMessage(LegacyComponentSerializer.legacyAmpersand()
-          .deserialize("&cUsage: /tp add <language> <key> <value>"));
+      sender.sendMessage(
+          LegacyComponentSerializer.legacyAmpersand()
+              .deserialize("&cUsage: /tp add <language> <key> <value>"));
       return;
     }
 
@@ -65,8 +66,11 @@ public class AddTranslationSubCommand {
       return;
     }
 
-    if (availableLanguages.stream().anyMatch(
-        l -> l.getDisplayName().equals(language) && engine.getAllRegisteredKeys().contains(key))) {
+    if (availableLanguages.stream()
+        .anyMatch(
+            l ->
+                l.getDisplayName().equals(language)
+                    && engine.getAllRegisteredKeys().contains(key))) {
 
       if (engine.addTranslation(Language.fromDisplayName(language), key, value)) {
         sender.sendMessage(
@@ -76,7 +80,5 @@ public class AddTranslationSubCommand {
             LegacyComponentSerializer.legacyAmpersand().deserialize("&c Translation not added"));
       }
     }
-
-
   }
 }

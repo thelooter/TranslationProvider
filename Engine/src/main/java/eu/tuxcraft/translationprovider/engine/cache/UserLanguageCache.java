@@ -4,12 +4,11 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import eu.tuxcraft.translationprovider.engine.cache.loaders.UserLanguageCacheLoader;
 import eu.tuxcraft.translationprovider.engine.model.Language;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Caches the users languages
@@ -39,7 +38,6 @@ public class UserLanguageCache {
    *
    * @param uuid The user's {@link UUID}.
    * @return The {@link Language} of the user.
-   *
    * @since 2.0.0
    */
   public Language getUserLanguage(UUID uuid) {

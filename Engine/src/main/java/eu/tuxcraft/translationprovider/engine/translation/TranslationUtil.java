@@ -25,14 +25,13 @@ public class TranslationUtil {
    *
    * @since 2.0.0
    */
-  public TranslationUtil() {
-  }
+  public TranslationUtil() {}
 
   /**
    * Translates a string.
    *
-   * @param key        The key of the string to translate
-   * @param language   The language to translate to
+   * @param key The key of the string to translate
+   * @param language The language to translate to
    * @param parameters The parameters to replace in the string
    * @return The translated string
    * @since 2.0.0
@@ -71,7 +70,7 @@ public class TranslationUtil {
   /**
    * Calculates the fallback string.
    *
-   * @param key        The key of the string to get the fallback string for
+   * @param key The key of the string to get the fallback string for
    * @param parameters The parameters to replace in the string
    * @return The fallback string
    * @since 2.0.0

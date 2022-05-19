@@ -13,7 +13,6 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
 /**
  * TabCompleter for the @{@link TranslationProviderCommand}
  *
@@ -31,7 +30,6 @@ public class TranslationProviderTabCompletion implements TabCompleter {
   String LANGUAGE_KEY = "language";
   String TRANSLATION_KEY = "translation";
 
-
   /**
    * Creates a new instance of the {@link TranslationProviderTabCompletion}
    *
@@ -46,9 +44,9 @@ public class TranslationProviderTabCompletion implements TabCompleter {
    * {@inheritDoc}
    *
    * @param commandSender The {@link CommandSender}
-   * @param command       The {@link Command}
-   * @param s             The String
-   * @param args          The arguments
+   * @param command The {@link Command}
+   * @param s The String
+   * @param args The arguments
    * @return The list of possible completions
    * @since 2.0.0
    */
@@ -88,8 +86,9 @@ public class TranslationProviderTabCompletion implements TabCompleter {
 
     if (args.length == 4) {
       if (args[0].equalsIgnoreCase(ADD_KEY)) {
-        if (args[1].equalsIgnoreCase(TRANSLATION_KEY) && Language.getAvailableLanguages().stream()
-            .anyMatch(l -> l.getDisplayName().equalsIgnoreCase(args[2]))) {
+        if (args[1].equalsIgnoreCase(TRANSLATION_KEY)
+            && Language.getAvailableLanguages().stream()
+                .anyMatch(l -> l.getDisplayName().equalsIgnoreCase(args[2]))) {
           return engine.getAllRegisteredKeys();
         }
         if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
@@ -103,8 +102,9 @@ public class TranslationProviderTabCompletion implements TabCompleter {
 
     if (args.length == 5) {
       if (args[0].equalsIgnoreCase(ADD_KEY)) {
-        if (args[1].equalsIgnoreCase(TRANSLATION_KEY) && Language.getAvailableLanguages().stream()
-            .anyMatch(l -> l.getDisplayName().equalsIgnoreCase(args[2]))
+        if (args[1].equalsIgnoreCase(TRANSLATION_KEY)
+            && Language.getAvailableLanguages().stream()
+                .anyMatch(l -> l.getDisplayName().equalsIgnoreCase(args[2]))
             && engine.getAllRegisteredKeys().stream().anyMatch(k -> k.equalsIgnoreCase(args[3]))) {
           return Collections.singletonList("Add Translation here");
         }
@@ -114,12 +114,12 @@ public class TranslationProviderTabCompletion implements TabCompleter {
       }
     }
 
-    if (args.length == 6 && args[0].equalsIgnoreCase(ADD_KEY) && args[1].equalsIgnoreCase(
-        LANGUAGE_KEY)) {
+    if (args.length == 6
+        && args[0].equalsIgnoreCase(ADD_KEY)
+        && args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
       return Collections.singletonList("<default>");
     }
 
     return Collections.singletonList("Invalid amount of Arguments");
-
   }
 }

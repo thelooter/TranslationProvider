@@ -10,6 +10,4 @@ public class Messages {
     public static Message notEnoughArguments;
     public static String testWrongType;
   }
-
-
 }

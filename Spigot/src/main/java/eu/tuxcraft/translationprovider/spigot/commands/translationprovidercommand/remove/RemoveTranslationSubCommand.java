@@ -23,12 +23,12 @@ public class RemoveTranslationSubCommand {
    * Creates a new instance of the {@link RemoveTranslationSubCommand} class.
    *
    * @param engine The {@link TranslationProviderEngine} instance.
-   * @param args   The arguments.
+   * @param args The arguments.
    * @param sender The {@link CommandSender} instance.
    * @since 2.1.0
    */
-  public RemoveTranslationSubCommand(TranslationProviderEngine engine, String[] args,
-      CommandSender sender) {
+  public RemoveTranslationSubCommand(
+      TranslationProviderEngine engine, String[] args, CommandSender sender) {
     this.engine = engine;
     this.sender = sender;
 
@@ -43,15 +43,17 @@ public class RemoveTranslationSubCommand {
    */
   private void executeRemoveTranslationSubCommand(String[] args) {
     if (args.length != 4) {
-      sender.sendMessage(LegacyComponentSerializer.legacyAmpersand()
-          .deserialize("&cUsage: /tp remove <language> <key> <value>"));
+      sender.sendMessage(
+          LegacyComponentSerializer.legacyAmpersand()
+              .deserialize("&cUsage: /tp remove <language> <key> <value>"));
       return;
     }
 
     String language = args[2];
     String key = args[3];
 
-    if (Language.getAvailableLanguages().stream().map(Language::getDisplayName)
+    if (Language.getAvailableLanguages().stream()
+        .map(Language::getDisplayName)
         .noneMatch(language::equals)) {
       sender.sendMessage(
           LegacyComponentSerializer.legacyAmpersand().deserialize("&cLanguage not found."));
@@ -68,8 +70,9 @@ public class RemoveTranslationSubCommand {
       sender.sendMessage(
           LegacyComponentSerializer.legacyAmpersand().deserialize("&aTranslation removed."));
     } else {
-      sender.sendMessage(LegacyComponentSerializer.legacyAmpersand()
-          .deserialize("&cFailed to remove Translation."));
+      sender.sendMessage(
+          LegacyComponentSerializer.legacyAmpersand()
+              .deserialize("&cFailed to remove Translation."));
     }
   }
 }
