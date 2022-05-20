@@ -131,24 +131,22 @@ public class TranslationDatabaseHelper {
    *
    * @param key The key to add.
    * @param value The value to add.
-   * @return True if the translation was added, false otherwise.
    * @since 2.1.0
    */
-  public boolean addTranslation(String key, String value) {
+  public void addTranslation(String key, String value) {
     try (PreparedStatement preparedStatement =
         connection.prepareStatement(
-            "INSERT INTO translation_entries (lang_id, translation_key, translation) VALUES (?, ?, ?)")) {
+            "INSERT INTO translation_entries (lang_id, translation_key, translation) VALUES (?, ?, ?) ON CONFLICT DO NOTHING ")) {
 
       preparedStatement.setString(1, language.getIsoCode());
       preparedStatement.setString(2, key);
       preparedStatement.setString(3, value);
 
-      return preparedStatement.executeUpdate() > 0;
+      preparedStatement.execute();
 
     } catch (SQLException e) {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
     }
-    return false;
   }
 
   /**

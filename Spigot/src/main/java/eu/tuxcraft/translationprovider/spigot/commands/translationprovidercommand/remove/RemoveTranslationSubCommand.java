@@ -45,7 +45,7 @@ public class RemoveTranslationSubCommand {
     if (args.length != 4) {
       sender.sendMessage(
           LegacyComponentSerializer.legacyAmpersand()
-              .deserialize("&cUsage: /tp remove <language> <key> <value>"));
+              .deserialize("&cUsage: /tlp remove <language> <key> <value>"));
       return;
     }
 

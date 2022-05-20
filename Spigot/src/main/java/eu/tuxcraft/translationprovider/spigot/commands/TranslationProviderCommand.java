@@ -43,6 +43,7 @@ public class TranslationProviderCommand implements CommandExecutor {
       @NotNull Command command,
       @NotNull String s,
       @NotNull String[] args) {
+
     if (args.length == 0) {
       commandSender.sendMessage("Possible Options: reload, stats,clear, add");
       return true;
@@ -78,7 +79,7 @@ public class TranslationProviderCommand implements CommandExecutor {
           new AddTranslationSubCommand(logger, engine, args, commandSender);
         }
       }
-      case "help" -> new HelpSubCommand(commandSender);
+      case "help" -> new HelpSubCommand(commandSender,args);
       case "remove" -> {
         if (args[1].equals("language")) {
           new RemoveLanguageSubCommand(engine, args, commandSender);

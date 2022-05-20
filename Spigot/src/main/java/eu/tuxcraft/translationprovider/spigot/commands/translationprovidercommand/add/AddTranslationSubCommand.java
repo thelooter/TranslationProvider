@@ -52,7 +52,7 @@ public class AddTranslationSubCommand {
     if (args.length != 5) {
       sender.sendMessage(
           LegacyComponentSerializer.legacyAmpersand()
-              .deserialize("&cUsage: /tp add <language> <key> <value>"));
+              .deserialize("&cUsage: /tlp add translation <language> <key> <value>"));
       return;
     }
 
@@ -66,19 +66,14 @@ public class AddTranslationSubCommand {
       return;
     }
 
-    if (availableLanguages.stream()
-        .anyMatch(
-            l ->
-                l.getDisplayName().equals(language)
-                    && engine.getAllRegisteredKeys().contains(key))) {
+    if (engine.getAllRegisteredKeys().contains(key)) {
 
-      if (engine.addTranslation(Language.fromDisplayName(language), key, value)) {
-        sender.sendMessage(
-            LegacyComponentSerializer.legacyAmpersand().deserialize("&a Translation added"));
-      } else {
-        sender.sendMessage(
-            LegacyComponentSerializer.legacyAmpersand().deserialize("&c Translation not added"));
-      }
+      engine.addTranslation(Language.fromDisplayName(language), key, value);
+      sender.sendMessage(
+          LegacyComponentSerializer.legacyAmpersand().deserialize("&a Translation added"));
+    } else {
+      sender.sendMessage(
+          LegacyComponentSerializer.legacyAmpersand().deserialize("&c Key not found"));
     }
   }
 }
