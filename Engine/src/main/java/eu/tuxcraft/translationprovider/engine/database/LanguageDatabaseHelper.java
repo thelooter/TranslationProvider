@@ -50,10 +50,9 @@ public class LanguageDatabaseHelper {
    * Adds a new language to the database.
    *
    * @param language The {@link Language} to add.
-   * @return True if the language was added, false otherwise.
    * @since 2.1.0
    */
-  public boolean addLanguage(Language language) {
+  public void addLanguage(Language language) {
     try (PreparedStatement insertStatement =
         connection.prepareStatement(
             "INSERT INTO translation_languages (iso_code, display_name, is_enabled, is_default) VALUES (?,?,?,?)")) {
@@ -64,15 +63,11 @@ public class LanguageDatabaseHelper {
 
       if (insertStatement.executeUpdate() == 0) {
         logger.warning("Language already exists, doing nothing!");
-        return false;
-      } else {
-        return true;
       }
 
     } catch (SQLException exception) {
       logger.severe(ExceptionUtils.getStackTrace(exception));
     }
-    return false;
   }
 
   /**

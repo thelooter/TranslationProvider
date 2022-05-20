@@ -15,7 +15,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class LazyLoadingMessageTest {
@@ -73,7 +72,6 @@ public class LazyLoadingMessageTest {
   }
 
   @Test
-  @Disabled("For some god forsaken reason, this test fails. I don't know why.")
   void testSendToWithNewLine() {
     LazyLoadingMessage testMessage = new LazyLoadingMessage("test.newline");
     PlayerMock player =

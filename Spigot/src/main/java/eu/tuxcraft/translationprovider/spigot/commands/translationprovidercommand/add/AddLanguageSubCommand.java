@@ -80,13 +80,7 @@ public class AddLanguageSubCommand {
     Language language = new Language(isoCode, displayName, enabled, defaultLanguage);
 
     // Add language to engine
-    if (engine.addLanguage(language)) {
-      sender.sendMessage(
-          LegacyComponentSerializer.legacyAmpersand().deserialize("&aLanguage added"));
-    } else {
-      sender.sendMessage(
-          LegacyComponentSerializer.legacyAmpersand().deserialize("&cFailed to add language"));
-      logger.warning("Failed to add language " + language.getIsoCode());
-    }
+    engine.addLanguage(language);
+    sender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize("&aLanguage added"));
   }
 }
