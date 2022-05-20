@@ -97,11 +97,6 @@ public class TranslationProviderEngine {
 
       List<Language> availableLanguages = Language.getAvailableLanguages();
 
-      getLogger().info("Loading translations for " + availableLanguages.size() + " languages");
-      for (Language language : availableLanguages) {
-        getLogger().info("Loading translations for " + language.getDisplayName());
-      }
-
       if (availableLanguages.stream().noneMatch(Language::isDefault)) {
         throw new IllegalStateException("No default language found");
       }

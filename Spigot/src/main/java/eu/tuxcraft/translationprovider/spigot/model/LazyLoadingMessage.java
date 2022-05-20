@@ -66,13 +66,12 @@ public class LazyLoadingMessage implements Message {
     } else {
       translation = engine.getTranslationForUser(null, key, params);
     }
-
     if (translation.contains("\n")) {
-      for (String line : translation.split("\n")) {
+      translation.lines().forEach((line) -> {
         Component miniMessage = MiniMessage.miniMessage().deserialize(line);
         String convertedLine = LegacyComponentSerializer.legacySection().serialize(miniMessage);
         cs.sendMessage(convertedLine);
-      }
+      });
     } else {
       Component miniMessage = MiniMessage.miniMessage().deserialize(translation);
       String convertedMessage = LegacyComponentSerializer.legacySection().serialize(miniMessage);
