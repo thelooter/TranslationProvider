@@ -147,11 +147,10 @@ public class TranslationProviderEngine {
    * Adds a new {@link Language}
    *
    * @param language The new {@link Language}
-   * @return True if the {@link Language} was added, false otherwise
    * @since 2.1.0
    */
-  public boolean addLanguage(Language language) {
-    return new LanguageDatabaseHelper(logger).addLanguage(language);
+  public void addLanguage(Language language) {
+    new LanguageDatabaseHelper(logger).addLanguage(language);
   }
 
   /**

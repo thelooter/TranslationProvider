@@ -67,6 +67,10 @@ public class TranslationProviderCommand implements CommandExecutor {
         commandSender.sendMessage("Cleared Cache");
       }
       case "add" -> {
+        if (args.length == 1) {
+          commandSender.sendMessage("Possible Options: language, translation");
+          return true;
+        }
         if (args[1].equals("language")) {
           new AddLanguageSubCommand(logger, engine, args, commandSender);
         }
