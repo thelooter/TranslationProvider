@@ -1,7 +1,6 @@
 package eu.tuxcraft.translationprovider.engine.database;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
-import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -97,16 +96,22 @@ public class UserDatabaseHelper {
    * @since 2.0.0
    */
   public void setUserLanguage(Language language) {
-    try (PreparedStatement statement =
-        connection.prepareStatement(
-            "UPDATE translation_user SET lang_id = ? WHERE player_uuid = ?")) {
+    try (PreparedStatement updateStatement  =
+            connection.prepareStatement(
+                "UPDATE translation_user SET lang_id = ? WHERE player_uuid = ?");
+        PreparedStatement insertStatement =
+            connection.prepareStatement(
+                "INSERT INTO translation_user (player_uuid, lang_id) VALUES (?, ?)")) {
 
-      statement.setObject(1, language.getIsoCode());
-      statement.setObject(2, userUUID);
 
-      if (statement.executeUpdate() == 0) {
-        throw new LanguageException(
-            "Could not update language for user " + userUUID + "! Probably not inserted yet!");
+
+      updateStatement.setObject(1, language.getIsoCode());
+      updateStatement.setObject(2, userUUID);
+
+      if (updateStatement.executeUpdate() == 0) {
+        insertStatement.setObject(1, userUUID);
+        insertStatement.setObject(2, language.getIsoCode());
+        insertStatement.executeUpdate();
       }
 
     } catch (SQLException e) {
