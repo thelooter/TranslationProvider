@@ -58,23 +58,31 @@ public class HelpSubCommand {
    *
    *                      @since 2.1.0
    */
-  public HelpSubCommand(CommandSender commandSender) {
+  public HelpSubCommand(CommandSender commandSender,String[] args) {
     this.commandSender = commandSender;
 
-    executeHelpSubCommand();
+    executeHelpSubCommand(args);
   }
 
   /**
    * Executes the help sub-command
    * @since 2.1.0
    */
-  private void executeHelpSubCommand() {
+  private void executeHelpSubCommand(String[] args) {
+    if (args.length != 1) {
+      commandSender.sendMessage(
+          LegacyComponentSerializer.legacyAmpersand()
+              .deserialize("&cUsage: /tlp help"));
+      return;
+    }
     if (commandSender instanceof Player player) {
 
       player.sendMessage(helpComponent);
 
       return;
     }
+
+    System.out.println(PlainTextComponentSerializer.plainText().serialize(helpComponent));
 
     commandSender.sendMessage(PlainTextComponentSerializer.plainText().serialize(helpComponent));
   }

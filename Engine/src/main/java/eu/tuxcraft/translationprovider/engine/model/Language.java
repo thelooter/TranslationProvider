@@ -7,9 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -19,8 +18,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  * @author thelooter
  * @since 2.0.0
  */
-@Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Data
 public class Language {
 
   String isoCode;
@@ -113,59 +112,5 @@ public class Language {
         .findFirst()
         .orElseThrow(
             () -> new LanguageException("No language found with display name " + displayName));
-  }
-
-  /**
-   * Converts a {@link Language} to a {@link String}.
-   *
-   * @return The {@link Language} as a {@link String}.
-   * @since 2.0.0
-   */
-  @Override
-  public String toString() {
-    return "Language{"
-        + "isoCode='"
-        + isoCode
-        + '\''
-        + ", displayName='"
-        + displayName
-        + '\''
-        + ", enabled="
-        + enabled
-        + ", defaultLanguage="
-        + isDefault
-        + '}';
-  }
-
-  /**
-   * Checks if two {@link Language}s are equal.
-   *
-   * @return True if the two {@link Language}s are equal, false otherwise.
-   * @since 2.0.0
-   */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Language language = (Language) o;
-    return enabled == language.enabled
-        && isDefault == language.isDefault
-        && isoCode.equals(language.isoCode)
-        && displayName.equals(language.displayName);
-  }
-
-  /**
-   * Returns the hash code of the {@link Language}.
-   *
-   * @return The hash code of the {@link Language}.
-   * @since 2.0.0
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(isoCode, displayName, enabled, isDefault);
   }
 }

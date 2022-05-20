@@ -9,5 +9,12 @@ public class Messages {
     public static Message noPermission;
     public static Message notEnoughArguments;
     public static String testWrongType;
+
+
+  }
+
+  public static class Command {
+    public static Message testChange;
   }
 }
+

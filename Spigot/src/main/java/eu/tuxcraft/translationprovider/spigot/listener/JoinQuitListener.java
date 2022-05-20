@@ -34,12 +34,11 @@ public class JoinQuitListener implements Listener {
    */
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
-
-    if (!event.getPlayer().hasPlayedBefore()) {
+    if (event.getPlayer().hasPlayedBefore()) {
+      engine.loadTranslationsForUser(event.getPlayer().getUniqueId());
+    } else {
       engine.setDefaultLanguage(event.getPlayer().getUniqueId());
     }
-
-    engine.loadTranslationsForUser(event.getPlayer().getUniqueId());
   }
 
   /**

@@ -180,11 +180,10 @@ public class TranslationProviderEngine {
    * @param language The {@link Language} to add the Translation to
    * @param key The Translation Key
    * @param value The Translation
-   * @return True if the Translation was added, false otherwise
    * @since 2.1.0
    */
-  public boolean addTranslation(Language language, String key, String value) {
-    return new TranslationDatabaseHelper(language).addTranslation(key, value);
+  public void addTranslation(Language language, String key, String value) {
+    new TranslationDatabaseHelper(language).addTranslation(key, value);
   }
 
   /**
