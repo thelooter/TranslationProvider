@@ -79,6 +79,14 @@ public class TranslationProviderCommandTest {
     player.assertSaid("Cleared Cache");
   }
 
+  @Test
+  void testInvalidFirstArg() {
+
+    player.performCommand("tlp invalid");
+
+    player.assertSaid("Possible Options: reload, stats, clear, add, remove, help, version");
+  }
+
   @Nested
   class Add {
 
@@ -392,6 +400,81 @@ public class TranslationProviderCommandTest {
       player.assertSaid(
           "§eTranslationProvider Version: §b"
               + TranslationProvider.getInstance().getDescription().getVersion());
+    }
+  }
+
+  @Nested
+  class Remove {
+    @BeforeEach
+    void setUp() {
+
+      if (MockBukkit.isMocked()) {
+        MockBukkit.unmock();
+      }
+
+      server = MockBukkit.mock();
+      plugin = MockBukkit.load(TranslationProvider.class);
+
+      player =
+          new PlayerMock(
+              server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+
+      server.addPlayer(player);
+    }
+
+    @Test
+    void testCommandRemoveOneArg() {
+      player.performCommand("tlp remove");
+
+      player.assertSaid("§cPossible Options: language, translation");
+    }
+
+    @Nested
+    class RemoveLanguage {
+
+      @BeforeEach
+      void setUp() {
+
+        if (MockBukkit.isMocked()) {
+          MockBukkit.unmock();
+        }
+
+        server = MockBukkit.mock();
+        plugin = MockBukkit.load(TranslationProvider.class);
+
+        player =
+            new PlayerMock(
+                server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+
+        server.addPlayer(player);
+      }
+
+      @Test
+      void testCommandRemoveLanguage() {
+        player.performCommand("tlp remove language");
+
+        player.assertSaid("§cUsage: /tp remove <language>");
+      }
+
+      @Test
+      void testCommandRemoveLanguageNotExisting() {
+        player.performCommand("tlp remove language notExisting");
+
+        player.assertSaid("§cLanguage not found.");
+      }
+
+      @Test
+      void testCommandRemoveLanguageWithLanguageExisting() {
+
+        Language language = new Language("ET", "Eesti", true, true);
+
+        TranslationProvider.getEngine().addLanguage(language);
+        player.performCommand("tlp remove language Eesti");
+
+        player.assertSaid("§aLanguage removed.");
+
+        assertThat(Language.getAvailableLanguages().contains(language), equalTo(false));
+      }
     }
   }
 

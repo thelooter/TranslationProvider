@@ -190,11 +190,13 @@ public class TranslationProviderEngine {
    * Removes a Language from the {@link TranslationProviderEngine}
    *
    * @param lang The {@link Language} to remove
-   * @return True if the {@link Language} was removed, false otherwise
    * @since 2.1.0
    */
-  public boolean removeLanguage(Language lang) {
-    return new LanguageDatabaseHelper(logger).removeLanguage(lang);
+  public void removeLanguage(Language lang) {
+    if (lang == null) {
+      return;
+    }
+    new LanguageDatabaseHelper(logger).removeLanguage(lang);
   }
 
   /**
