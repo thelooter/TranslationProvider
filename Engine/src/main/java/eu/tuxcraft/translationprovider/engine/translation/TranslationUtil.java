@@ -41,6 +41,7 @@ public class TranslationUtil {
     String translation =
         engine.getTranslationCache().getTranslation(language, key); // Get Translation from Cache
 
+
     if (translation == null) {
       logger.warning(
           "Translation for key " + key + " not found in language " + language.getDisplayName());
@@ -48,7 +49,6 @@ public class TranslationUtil {
           key, parameters); // Return Fallback String if no Translation was found
     }
     if (translation.contains("%")) { // Handle Parameters
-
       if (parameters == null) { // Handle Default Parameters for Unicode Symbols
         parameters = new HashMap<>(getDefaultParameters());
       } else {
@@ -57,8 +57,9 @@ public class TranslationUtil {
 
       for (Map.Entry<String, String> parameter :
           parameters.entrySet()) { // Replace All Placeholders with Parameters
-        translation = translation.replace("%" + parameter.getKey() + "%", parameter.getValue());
+        translation = translation.replace("%" + parameter.getKey(), parameter.getValue());
       }
+
 
       translation = translation.replace("\\%", "%"); // Replace escaped Escape Character
       translation = translation.replace("\\n", "\n"); // Replace escaped Newline Character

@@ -8,6 +8,7 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -256,7 +257,6 @@ public class TranslationProviderCommandTest {
                 .getTranslationCache()
                 .getTranslation(Language.fromDisplayName("English"), "test.command.testChange");
 
-        System.out.println(translation);
 
         TranslationProvider.getEngine()
             .removeTranslation(Language.fromDisplayName("English"), "test.command.testChange");
@@ -476,7 +476,81 @@ public class TranslationProviderCommandTest {
         assertThat(Language.getAvailableLanguages().contains(language), equalTo(false));
       }
     }
+
+    @Nested
+    class RemoveTranslation {
+      @BeforeEach
+      void setUp() {
+
+        if (MockBukkit.isMocked()) {
+          MockBukkit.unmock();
+        }
+
+        server = MockBukkit.mock();
+        plugin = MockBukkit.load(TranslationProvider.class);
+
+        player =
+            new PlayerMock(
+                server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+
+        server.addPlayer(player);
+      }
+
+      @Test
+      void testCommandRemoveTranslation() {
+        player.performCommand("tlp remove translation");
+
+        player.assertSaid("§cUsage: /tlp remove translation <language> <key>");
+      }
+
+      @Test
+      void testCommandRemoveTranslationLanguageNotExisting() {
+        player.performCommand("tlp remove translation notExisting test.testRemove");
+
+        player.assertSaid("§cLanguage not found.");
+      }
+
+      @Test
+      void testCommandRemoveTranslationKeyNotExisting() {
+        player.performCommand("tlp remove translation English test.testRemoveNotExisting");
+
+        player.assertSaid("§cKey not found.");
+      }
+
+      @Test
+      void testRemoveTranslation() {
+        Language language = Language.fromDisplayName("English");
+
+        String translation;
+
+        try {
+          translation = TranslationProvider.getEngine()
+              .getTranslationCache()
+              .getCache()
+              .get(language)
+              .get("test.command.testChange");
+        } catch (ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+
+        player.performCommand("tlp remove translation English test.command.testChange");
+
+        player.assertSaid("§aTranslation removed.");
+
+        assertThat(
+            TranslationProvider.getEngine()
+                .getTranslationCache()
+                .getTranslation(language, "test.testRemove"),
+            equalTo(null));
+
+        TranslationProvider.getEngine().addTranslation(language, "test.command.testChange", translation);
+
+      }
+
+
+    }
   }
+
 
   @AfterEach
   public void tearDown() {

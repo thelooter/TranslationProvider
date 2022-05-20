@@ -153,10 +153,9 @@ public class TranslationDatabaseHelper {
    * Removes the given translation from the database.
    *
    * @param key The key to remove.
-   * @return True if the translation was removed, false otherwise.
    * @since 2.1.0
    */
-  public boolean removeTranslation(String key) {
+  public void removeTranslation(String key) {
     try (PreparedStatement preparedStatement =
         connection.prepareStatement(
             "DELETE FROM translation_entries WHERE lang_id = ? AND translation_key = ?")) {
@@ -164,11 +163,10 @@ public class TranslationDatabaseHelper {
       preparedStatement.setString(1, language.getIsoCode());
       preparedStatement.setString(2, key);
 
-      return preparedStatement.executeUpdate() > 0;
+      preparedStatement.executeUpdate();
 
     } catch (SQLException e) {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
     }
-    return false;
   }
 }

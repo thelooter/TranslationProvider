@@ -83,8 +83,6 @@ public class HelpSubCommand {
       return;
     }
 
-    System.out.println(PlainTextComponentSerializer.plainText().serialize(helpComponent));
-
     commandSender.sendMessage(PlainTextComponentSerializer.plainText().serialize(helpComponent));
   }
 }

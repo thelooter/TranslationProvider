@@ -215,10 +215,9 @@ public class TranslationProviderEngine {
    *
    * @param language The {@link Language} to remove the Translation from
    * @param key The Translation Key
-   * @return True if the Translation was removed, false otherwise
    * @since 2.1.0
    */
-  public boolean removeTranslation(Language language, String key) {
-    return new TranslationDatabaseHelper(language).removeTranslation(key);
+  public void removeTranslation(Language language, String key) {
+    new TranslationDatabaseHelper(language).removeTranslation(key);
   }
 }

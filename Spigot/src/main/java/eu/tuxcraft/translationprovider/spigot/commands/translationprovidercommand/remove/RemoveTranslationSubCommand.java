@@ -45,7 +45,7 @@ public class RemoveTranslationSubCommand {
     if (args.length != 4) {
       sender.sendMessage(
           LegacyComponentSerializer.legacyAmpersand()
-              .deserialize("&cUsage: /tlp remove <language> <key> <value>"));
+              .deserialize("&cUsage: /tlp remove translation <language> <key>"));
       return;
     }
 
@@ -66,13 +66,8 @@ public class RemoveTranslationSubCommand {
       return;
     }
 
-    if (engine.removeTranslation(Language.fromDisplayName(language), key)) {
-      sender.sendMessage(
-          LegacyComponentSerializer.legacyAmpersand().deserialize("&aTranslation removed."));
-    } else {
-      sender.sendMessage(
-          LegacyComponentSerializer.legacyAmpersand()
-              .deserialize("&cFailed to remove Translation."));
-    }
+    engine.removeTranslation(Language.fromDisplayName(language), key);
+    sender.sendMessage(
+        LegacyComponentSerializer.legacyAmpersand().deserialize("&aTranslation removed."));
   }
 }
