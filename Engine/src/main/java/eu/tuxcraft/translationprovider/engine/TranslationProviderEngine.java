@@ -190,11 +190,13 @@ public class TranslationProviderEngine {
    * Removes a Language from the {@link TranslationProviderEngine}
    *
    * @param lang The {@link Language} to remove
-   * @return True if the {@link Language} was removed, false otherwise
    * @since 2.1.0
    */
-  public boolean removeLanguage(Language lang) {
-    return new LanguageDatabaseHelper(logger).removeLanguage(lang);
+  public void removeLanguage(Language lang) {
+    if (lang == null) {
+      return;
+    }
+    new LanguageDatabaseHelper(logger).removeLanguage(lang);
   }
 
   /**
@@ -213,10 +215,9 @@ public class TranslationProviderEngine {
    *
    * @param language The {@link Language} to remove the Translation from
    * @param key The Translation Key
-   * @return True if the Translation was removed, false otherwise
    * @since 2.1.0
    */
-  public boolean removeTranslation(Language language, String key) {
-    return new TranslationDatabaseHelper(language).removeTranslation(key);
+  public void removeTranslation(Language language, String key) {
+    new TranslationDatabaseHelper(language).removeTranslation(key);
   }
 }

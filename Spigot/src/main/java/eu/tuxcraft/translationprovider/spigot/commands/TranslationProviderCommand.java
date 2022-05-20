@@ -81,11 +81,18 @@ public class TranslationProviderCommand implements CommandExecutor {
       }
       case "help" -> new HelpSubCommand(commandSender,args);
       case "remove" -> {
+        if (args.length == 1) {
+          commandSender.sendMessage(LegacyComponentSerializer.legacyAmpersand()
+              .deserialize("&cPossible Options: language, translation"));
+          return true;
+        }
         if (args[1].equals("language")) {
           new RemoveLanguageSubCommand(engine, args, commandSender);
+          return true;
         }
         if (args[1].equals("translation")) {
           new RemoveTranslationSubCommand(engine, args, commandSender);
+          return true;
         }
       }
       case "version" -> {
@@ -93,7 +100,7 @@ public class TranslationProviderCommand implements CommandExecutor {
             "&eTranslationProvider Version: &b" + TranslationProvider.getInstance().getDescription()
                 .getVersion()));
       }
-      default -> commandSender.sendMessage("Possible Options: reload, stats,clear");
+      default -> commandSender.sendMessage("Possible Options: reload, stats, clear, add, remove, help, version");
     }
     return true;
   }

@@ -10,8 +10,11 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import eu.tuxcraft.translationprovider.spigot.model.LazyLoadingMessage;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +56,7 @@ public class LazyLoadingMessageTest {
   @Test
   void testGetForConsoleSender() {
 
-    assertThat(message.getFor(Bukkit.getConsoleSender()),equalToIgnoringCase("Rang:"));
+    assertThat(message.getFor(Bukkit.getConsoleSender()), equalToIgnoringCase("Rang:"));
   }
 
   @Test
@@ -105,17 +108,17 @@ public class LazyLoadingMessageTest {
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
-
-
-    assertThat(message.getComponentFor(player,true), instanceOf(Component.class));
-    assertThat(message.getComponentFor(player,true), equalToObject(Component.text("Rank:")));
+    assertThat(message.getComponentFor(player, true), instanceOf(Component.class));
+    assertThat(message.getComponentFor(player, true), equalToObject(Component.text("Rank:")));
   }
 
   @Test
   void testGetComponentForConsoleSender() {
     ConsoleCommandSenderMock consoleCommandSenderMock = new ConsoleCommandSenderMock();
 
-    assertThat(message.getComponentFor(consoleCommandSenderMock,true), equalToObject(Component.text("Rang:")));
+    assertThat(
+        message.getComponentFor(consoleCommandSenderMock, true),
+        equalToObject(Component.text("Rang:")));
   }
 
   @Test
@@ -126,8 +129,92 @@ public class LazyLoadingMessageTest {
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
-    assertThat(message.getComponentFor(player,false), instanceOf(Component.class));
-    assertThat(message.getComponentFor(player,false), equalToObject(Component.text("Rank:")));
+    assertThat(message.getComponentFor(player, false), instanceOf(Component.class));
+    assertThat(message.getComponentFor(player, false), equalToObject(Component.text("Rank:")));
+  }
+
+  @Test
+  void getComponentForWithParametersNoMiniMessage() {
+    PlayerMock player =
+        new PlayerMock(
+            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+
+    TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
+
+    message = new LazyLoadingMessage("test.parameter");
+
+    assertThat(
+        message.getComponentFor(player, new HashMap<>(Map.of("%layer", player.getName())), false),
+        instanceOf(Component.class));
+
+    assertThat(
+        message.getComponentFor(player, new HashMap<>(Map.of("player", player.getName())), false),
+        equalToObject(Component.text("Playername: " + player.getName())));
+  }
+
+  @Test
+  void testGetComponentForWithParametersIsMinimessage() {
+    PlayerMock player =
+        new PlayerMock(
+            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+
+    TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
+
+    message = new LazyLoadingMessage("test.parameterWithMiniMessage");
+
+    assertThat(
+        message.getComponentFor(player, new HashMap<>(Map.of("player", player.getName())), true),
+        instanceOf(Component.class));
+
+    assertThat(
+        message.getComponentFor(player, new HashMap<>(Map.of("player", player.getName())), true),
+        equalToObject(
+            MiniMessage.miniMessage().deserialize("<red>Playername:<red> " + player.getName())));
+  }
+
+  @Test
+  void testGetComponentForConsoleCommandSenderWithParameterNoMiniMessage() {
+    ConsoleCommandSenderMock consoleCommandSenderMock = new ConsoleCommandSenderMock();
+
+    message = new LazyLoadingMessage("test.parameter");
+
+    assertThat(
+        message.getComponentFor(
+            consoleCommandSenderMock,
+            new HashMap<>(Map.of("%layer", consoleCommandSenderMock.getName())),
+            false),
+        instanceOf(Component.class));
+
+    assertThat(
+        message.getComponentFor(
+            consoleCommandSenderMock,
+            new HashMap<>(Map.of("player", consoleCommandSenderMock.getName())),
+            false),
+        equalToObject(Component.text("Spielername: " + consoleCommandSenderMock.getName())));
+  }
+
+  @Test
+  void testGetComponentForConsoleCommandSenderWithParametersIsMinimessage() {
+
+    ConsoleCommandSenderMock consoleCommandSenderMock = new ConsoleCommandSenderMock();
+
+    message = new LazyLoadingMessage("test.parameterWithMiniMessage");
+
+    assertThat(
+        message.getComponentFor(
+            consoleCommandSenderMock,
+            new HashMap<>(Map.of("player", consoleCommandSenderMock.getName())),
+            true),
+        instanceOf(Component.class));
+
+    assertThat(
+        message.getComponentFor(
+            consoleCommandSenderMock,
+            new HashMap<>(Map.of("player", consoleCommandSenderMock.getName())),
+            true),
+        equalToObject(
+            MiniMessage.miniMessage()
+                .deserialize("<red>Spielername:<red> " + consoleCommandSenderMock.getName())));
   }
 
   @AfterEach
@@ -142,8 +229,5 @@ public class LazyLoadingMessageTest {
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("Deutsch"));
 
     MockBukkit.unmock();
-
   }
-
-
 }

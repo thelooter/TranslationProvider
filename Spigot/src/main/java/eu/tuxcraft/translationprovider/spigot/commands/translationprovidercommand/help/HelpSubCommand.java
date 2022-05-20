@@ -55,8 +55,8 @@ public class HelpSubCommand {
   /**
    * Creates a new instance of the help sub-command
    * @param commandSender The {@link CommandSender} to send the help to
-   *
-   *                      @since 2.1.0
+   * @param args The arguments
+   * @since 2.1.0
    */
   public HelpSubCommand(CommandSender commandSender,String[] args) {
     this.commandSender = commandSender;
@@ -66,6 +66,7 @@ public class HelpSubCommand {
 
   /**
    * Executes the help sub-command
+   * @param args The arguments
    * @since 2.1.0
    */
   private void executeHelpSubCommand(String[] args) {
@@ -81,8 +82,6 @@ public class HelpSubCommand {
 
       return;
     }
-
-    System.out.println(PlainTextComponentSerializer.plainText().serialize(helpComponent));
 
     commandSender.sendMessage(PlainTextComponentSerializer.plainText().serialize(helpComponent));
   }

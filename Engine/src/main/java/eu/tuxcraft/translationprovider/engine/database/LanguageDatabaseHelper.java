@@ -100,24 +100,19 @@ public class LanguageDatabaseHelper {
    * Removes a language from the database.
    *
    * @param lang uage The {@link Language} to remove.
-   * @return True if the language was removed, false otherwise.
+   * @since 2.1.0
    */
-  public boolean removeLanguage(Language lang) {
+  public void removeLanguage(Language lang) {
     try (PreparedStatement deleteStatement =
         connection.prepareStatement("DELETE FROM translation_languages WHERE iso_code = ?")) {
 
       deleteStatement.setString(1, lang.getIsoCode());
 
-      if (deleteStatement.executeUpdate() == 0) {
-        logger.warning("No matching Language found, doing nothing!");
-        return false;
-      } else {
-        return true;
-      }
+      deleteStatement.executeUpdate();
+
     } catch (SQLException e) {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
     }
-    return false;
   }
 
   /**

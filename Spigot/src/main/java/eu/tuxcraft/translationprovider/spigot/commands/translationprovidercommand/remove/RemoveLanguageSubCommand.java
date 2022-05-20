@@ -1,7 +1,6 @@
 package eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
-import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -43,10 +42,11 @@ public class RemoveLanguageSubCommand {
    * @since 2.1.0
    */
   private void executeRemoveLanguageSubCommand(String[] args) {
-    if (args.length != 2) {
+    if (args.length != 3) {
       sender.sendMessage(
           LegacyComponentSerializer.legacyAmpersand()
               .deserialize("&cUsage: /tp remove <language>"));
+      return;
     }
 
     String languageString = args[2];
@@ -62,15 +62,10 @@ public class RemoveLanguageSubCommand {
         Language.getAvailableLanguages().stream()
             .filter(l -> l.getDisplayName().equals(languageString))
             .findFirst()
-            .orElseThrow(() -> new LanguageException("Language not found."));
+            .orElse(null);
 
-    if (engine.removeLanguage(lang)) {
-      sender.sendMessage(
-          LegacyComponentSerializer.legacyAmpersand().deserialize("&aLanguage removed."));
-    } else {
-      sender.sendMessage(
-          LegacyComponentSerializer.legacyAmpersand()
-              .deserialize("&cLanguage could not be removed."));
-    }
+    engine.removeLanguage(lang);
+    sender.sendMessage(
+        LegacyComponentSerializer.legacyAmpersand().deserialize("&aLanguage removed."));
   }
 }
