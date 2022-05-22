@@ -1,0 +1,16 @@
+version: 2
+updates:
+
+- package-ecosystem: "maven"
+  directory: "/Spigot"
+  schedule:
+    interval: "daily"
+  assignees:
+    - "thelooter"
+
+-  package-ecosystem: "maven"
+   directory: "/Engine"
+   schedule:
+     interval: "daily"
+   assignees:
+     - "thelooter"
