@@ -1,8 +1,3 @@
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.hamcrest.Matchers.equalToObject;
-import static org.hamcrest.Matchers.instanceOf;
-
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
@@ -10,15 +5,19 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import eu.tuxcraft.translationprovider.spigot.model.LazyLoadingMessage;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class LazyLoadingMessageTest {
 
@@ -45,7 +44,7 @@ public class LazyLoadingMessageTest {
   void testGetFor() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -63,7 +62,7 @@ public class LazyLoadingMessageTest {
   void testSendTo() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     server.addPlayer(player);
 
@@ -79,7 +78,7 @@ public class LazyLoadingMessageTest {
     LazyLoadingMessage testMessage = new LazyLoadingMessage("test.newline");
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     server.addPlayer(player);
 
@@ -104,7 +103,7 @@ public class LazyLoadingMessageTest {
   void testGetComponentFor() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -125,7 +124,7 @@ public class LazyLoadingMessageTest {
   void testGetComponentForNoMiniMessage() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -137,7 +136,7 @@ public class LazyLoadingMessageTest {
   void getComponentForWithParametersNoMiniMessage() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -156,7 +155,7 @@ public class LazyLoadingMessageTest {
   void testGetComponentForWithParametersIsMinimessage() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -222,7 +221,7 @@ public class LazyLoadingMessageTest {
 
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     server.addPlayer(player);
 

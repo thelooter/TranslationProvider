@@ -5,6 +5,7 @@ import eu.tuxcraft.translationprovider.engine.cache.TranslationCache;
 import eu.tuxcraft.translationprovider.engine.database.TranslationDatabaseHelper;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link CacheLoader} for the {@link TranslationCache}
@@ -29,7 +30,7 @@ public class TranslationCacheLoader extends CacheLoader<Language, Map<String, St
    * @since 2.0.0
    */
   @Override
-  public Map<String, String> load(Language key) throws Exception {
+  public @NotNull Map<String, String> load(Language key) throws Exception {
     return new TranslationDatabaseHelper(key).getTranslations();
   }
 }

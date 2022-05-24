@@ -8,15 +8,16 @@ import eu.tuxcraft.translationprovider.engine.database.TranslationDatabaseHelper
 import eu.tuxcraft.translationprovider.engine.database.UserDatabaseHelper;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.engine.translation.TranslationUtil;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Engine for the translation provider. Provides methods for the Implementations to use.
@@ -69,12 +70,13 @@ public class TranslationProviderEngine {
       return new TranslationUtil().translate(key, Language.getDefaultLanguage(), parameters);
     }
 
+    if (key == null || key.isEmpty() || key.isBlank()) {
+      return "";
+    }
+
     Language language = userLanguageCache.getUserLanguage(uuid);
 
     if (language == null) {
-      return "";
-    }
-    if (key == null || key.isEmpty() || key.isBlank()) {
       return "";
     }
 
@@ -123,24 +125,30 @@ public class TranslationProviderEngine {
   /**
    * Sets the {@link Language} for the Player
    *
-   * @param player The player's {@link UUID}
+   * @param uuid The player's {@link UUID}
    * @param language The new {@link Language}
    * @since 2.0.0
    */
-  public void playerLanguage(UUID player, Language language) {
-    userLanguageCache.getCache().put(player, language);
-    new UserDatabaseHelper(player).setUserLanguage(language);
+  public void playerLanguage(UUID uuid, Language language) {
+    if (uuid == null) {
+      throw new IllegalStateException("Cannot change language of ConsoleCommandSender");
+    }
+    userLanguageCache.getCache().put(uuid, language);
+    new UserDatabaseHelper(uuid).setUserLanguage(language);
   }
 
   /**
    * Gets the @{@link Language} of the Player
    *
-   * @param player The Player's {@link UUID}
+   * @param uuid The Player's {@link UUID}
    * @return The {@link Language} of the Player
    * @since 2.0.0
    */
-  public Language playerLanguage(UUID player) {
-    return userLanguageCache.getUserLanguage(player);
+  public Language playerLanguage(UUID uuid) {
+    if (uuid == null) {
+      return Language.getDefaultLanguage();
+    }
+    return userLanguageCache.getUserLanguage(uuid);
   }
 
   /**

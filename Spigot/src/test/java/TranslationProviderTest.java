@@ -1,20 +1,19 @@
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToObject;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
-
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
-import java.util.UUID;
 import lombok.SneakyThrows;
 import messages.Messages;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 class TranslationProviderTest {
 
@@ -59,7 +58,8 @@ class TranslationProviderTest {
   public void testGetPlayerLanguage() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer" +
+                "", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -72,7 +72,7 @@ class TranslationProviderTest {
   public void testSetPlayerLanguage() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("English"));
 
@@ -85,7 +85,7 @@ class TranslationProviderTest {
   void tearDown() {
     PlayerMock player =
         new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     TranslationProvider.playerLanguage(player, Language.fromDisplayName("Deutsch"));
     MockBukkit.unmock();

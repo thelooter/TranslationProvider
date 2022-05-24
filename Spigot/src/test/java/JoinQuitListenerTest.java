@@ -1,13 +1,8 @@
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToObject;
-import static org.hamcrest.Matchers.nullValue;
-
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -15,21 +10,32 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToObject;
+import static org.hamcrest.Matchers.nullValue;
+
 public class JoinQuitListenerTest {
 
   ServerMock server;
   TranslationProvider plugin;
+  PlayerMock playerMock;
 
   @BeforeEach
   public void setUp() {
 
     server = MockBukkit.mock();
     plugin = MockBukkit.load(TranslationProvider.class);
+
+    playerMock =
+        new PlayerMock(
+            server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
   }
 
   @Test
   void testNewJoin() {
-    PlayerMock playerMock = new PlayerMock(server, "Player0", UUID.randomUUID());
+    playerMock = new PlayerMock(server, "Player0", UUID.randomUUID());
 
     PlayerJoinEvent playerJoinEvent =
         new PlayerJoinEvent(
@@ -44,10 +50,6 @@ public class JoinQuitListenerTest {
 
   @Test
   void testExistingJoin() {
-    PlayerMock playerMock =
-        new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
-
     playerMock.setLastPlayed(System.currentTimeMillis());
 
     server.addPlayer(playerMock);
@@ -59,10 +61,6 @@ public class JoinQuitListenerTest {
 
   @Test
   void testPlayerQuit() {
-    PlayerMock playerMock =
-        new PlayerMock(
-            server, "thelooter2204", UUID.fromString("08fbc97b-93cd-4f2a-9369-29e025136b08"));
-
     playerMock.setLastPlayed(System.currentTimeMillis());
 
     server.addPlayer(playerMock);
@@ -85,6 +83,7 @@ public class JoinQuitListenerTest {
 
   @AfterEach
   public void tearDown() {
+    TranslationProvider.getEngine().playerLanguage(playerMock.getUniqueId(), Language.fromDisplayName("Deutsch"));
     MockBukkit.unmock();
   }
 }

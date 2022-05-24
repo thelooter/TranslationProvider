@@ -104,5 +104,5 @@ docker:
     branch: master
   only:
   - master
-include:
-- template: Security/Dependency-Scanning.gitlab-ci.yml
+#include:
+#- template: Security/Dependency-Scanning.gitlab-ci.yml
