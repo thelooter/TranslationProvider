@@ -2,13 +2,17 @@ package eu.tuxcraft.translationprovider.engine.cache;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.cache.loaders.UserLanguageCacheLoader;
 import eu.tuxcraft.translationprovider.engine.model.Language;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Caches the users languages
@@ -41,7 +45,13 @@ public class UserLanguageCache {
    * @since 2.0.0
    */
   public Language getUserLanguage(UUID uuid) {
-    return cache.getUnchecked(uuid);
+    Optional<Language> language = Optional.empty();
+    try {
+      language = Optional.of(cache.get(uuid));
+    } catch (Exception e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+    return language.orElse(null);
   }
 
   /**
