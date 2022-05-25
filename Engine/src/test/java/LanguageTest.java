@@ -1,6 +1,8 @@
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
 import eu.tuxcraft.translationprovider.engine.model.Language;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +22,12 @@ public class LanguageTest {
 
   Logger logger = Logger.getLogger(TranslationProviderEngineTest.class.getName());
 
+  Connection connection = null;
+
+
   @BeforeEach
   void setUp() {
 
-    Connection connection = null;
 
     try {
       Class.forName("org.postgresql.Driver");
@@ -43,4 +47,13 @@ public class LanguageTest {
           Language.fromDisplayName("NotExisting");
         });
   }
+
+  @AfterEach
+    void tearDown() {
+        try {
+        connection.close();
+        } catch (SQLException e) {
+        logger.severe(ExceptionUtils.getStackTrace(e));
+        }
+    }
 }
