@@ -207,15 +207,14 @@ public class TranslationProviderEngineTest {
         keys.add(resultSet.getString("key"));
       }
 
-      System.out.println(keys);
-      System.out.println(engine.getAllRegisteredKeys());
-
       assertThat(engine.getAllRegisteredKeys(), containsInAnyOrder(keys.toArray()));
 
     } catch (SQLException e) {
       logger.severe(ExceptionUtils.getStackTrace(e));
     }
   }
+
+
 
   @Test
   void testRemoveLanguage() {

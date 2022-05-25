@@ -2,11 +2,12 @@ package eu.tuxcraft.translationprovider.engine.translation;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 
 /**
  * Utility class for translation. Takes care of translation
@@ -41,7 +42,6 @@ public class TranslationUtil {
     String translation =
         engine.getTranslationCache().getTranslation(language, key); // Get Translation from Cache
 
-
     if (translation == null) {
       logger.warning(
           "Translation for key " + key + " not found in language " + language.getDisplayName());
@@ -59,7 +59,6 @@ public class TranslationUtil {
           parameters.entrySet()) { // Replace All Placeholders with Parameters
         translation = translation.replace("%" + parameter.getKey(), parameter.getValue());
       }
-
 
       translation = translation.replace("\\%", "%"); // Replace escaped Escape Character
       translation = translation.replace("\\n", "\n"); // Replace escaped Newline Character
@@ -81,17 +80,24 @@ public class TranslationUtil {
       return key;
     }
 
-    StringBuilder sb = new StringBuilder();
+    StringBuilder sb = new StringBuilder().append(key);
 
-    for (Map.Entry<String, String> entry : parameters.entrySet()) {
-      sb.append("{")
-          .append(sb.toString().isEmpty() ? "" : ", ")
-          .append(entry.getKey())
-          .append(": ")
-          .append(entry.getValue())
-          .append("}");
+    if (!parameters.isEmpty()) {
+
+      sb.append(" {");
+      boolean first = true;
+
+      for (Map.Entry<String, String> entry : parameters.entrySet()) {
+        if (!first) {
+          sb.append(", ");
+        }
+
+        sb.append(entry.getKey()).append(": ").append(entry.getValue());
+        first = false;
+      }
+
+      sb.append("}");
     }
-
     return sb.toString();
   }
 
