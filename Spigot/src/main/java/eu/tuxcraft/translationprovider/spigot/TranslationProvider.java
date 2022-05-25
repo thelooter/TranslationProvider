@@ -8,17 +8,20 @@ import eu.tuxcraft.translationprovider.spigot.commands.tabcompletion.Translation
 import eu.tuxcraft.translationprovider.spigot.listener.JoinQuitListener;
 import eu.tuxcraft.translationprovider.spigot.model.LazyLoadingMessage;
 import eu.tuxcraft.translationprovider.spigot.model.Message;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * The main class of the plugin.
@@ -95,6 +98,11 @@ public class TranslationProvider extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
     getLogger().info("TranslationProviderBukkit disabled");
   }
 

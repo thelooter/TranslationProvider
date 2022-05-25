@@ -1,4 +1,6 @@
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +22,10 @@ public class UserLanguageCacheTest {
 
     Logger logger = Logger.getLogger(TranslationProviderEngineTest.class.getName());
 
+    Connection connection = null;
+
     @BeforeEach
     void setUp() {
-
-        Connection connection = null;
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -44,6 +46,15 @@ public class UserLanguageCacheTest {
         engine.getUserLanguageCache().invalidateUser(UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
         assertThat(engine.getUserLanguageCache().getCache().size(), is(equalTo(0L)));
+    }
+
+    @AfterEach
+    void tearDown() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            logger.severe(ExceptionUtils.getStackTrace(e));
+        }
     }
 }
 

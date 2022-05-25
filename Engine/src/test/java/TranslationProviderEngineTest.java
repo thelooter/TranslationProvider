@@ -30,10 +30,10 @@ public class TranslationProviderEngineTest {
 
   Logger logger = Logger.getLogger(TranslationProviderEngineTest.class.getName());
 
+  Connection connection = null;
+
   @BeforeEach
   void setUp() {
-
-    Connection connection = null;
 
     try {
       Class.forName("org.postgresql.Driver");
@@ -198,12 +198,8 @@ public class TranslationProviderEngineTest {
   @Test
   void testGetAllRegisteredKeys() {
 
-    try (Connection connection =
-        DriverManager.getConnection(
-            "jdbc:postgresql://10.1.3.120:5432/tuxcraft-test", "tuxcraft-dev", "tuxcraft-dev")) {
-
-      ResultSet resultSet =
-          connection.prepareStatement("SELECT * FROM translation_keys").executeQuery();
+    try (ResultSet resultSet =
+        connection.prepareStatement("SELECT * FROM translation_keys").executeQuery(); ) {
 
       List<String> keys = new ArrayList<>();
 
@@ -300,5 +296,11 @@ public class TranslationProviderEngineTest {
   @AfterEach
   void tearDown() {
     engine.setDefaultLanguage(UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
+
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      logger.severe(ExceptionUtils.getStackTrace(e));
+    }
   }
 }
