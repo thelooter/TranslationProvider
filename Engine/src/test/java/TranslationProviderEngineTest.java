@@ -1,12 +1,17 @@
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -142,7 +147,7 @@ public class TranslationProviderEngineTest {
   @Test
   void testSetLanguageForConsoleSender() {
     Language language = Language.fromDisplayName("English");
-    assertThrows(IllegalStateException.class, () -> engine.playerLanguage(null, language));
+    assertThrows(IllegalArgumentException.class, () -> engine.playerLanguage(null, language));
   }
 
   @Test
@@ -176,6 +181,8 @@ public class TranslationProviderEngineTest {
     engine.addLanguage(newLanguage);
 
     assertThat(Language.getAvailableLanguages(), hasItem(newLanguage));
+
+    engine.removeLanguage(newLanguage);
   }
 
   @Test
@@ -186,5 +193,112 @@ public class TranslationProviderEngineTest {
     engine.loadTranslationsForUser(uuid);
 
     assertThat(engine.getTranslationCache().getCache().size(), equalTo(1L));
+  }
+
+  @Test
+  void testGetAllRegisteredKeys() {
+
+    try (Connection connection =
+        DriverManager.getConnection(
+            "jdbc:postgresql://10.1.3.120:5432/tuxcraft-test", "tuxcraft-dev", "tuxcraft-dev")) {
+
+      ResultSet resultSet =
+          connection.prepareStatement("SELECT * FROM translation_keys").executeQuery();
+
+      List<String> keys = new ArrayList<>();
+
+      while (resultSet.next()) {
+        keys.add(resultSet.getString("key"));
+      }
+
+      System.out.println(keys);
+      System.out.println(engine.getAllRegisteredKeys());
+
+      assertThat(engine.getAllRegisteredKeys(), containsInAnyOrder(keys.toArray()));
+
+    } catch (SQLException e) {
+      logger.severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
+
+  @Test
+  void testRemoveLanguage() {
+    Language language = new Language("TL", "TestLanguage", true, false);
+
+    engine.addLanguage(language);
+
+    assertThat(Language.getAvailableLanguages(), hasItem(language));
+
+    engine.removeLanguage(language);
+
+    assertThat(Language.getAvailableLanguages(), not(hasItem(language)));
+  }
+
+  @Test
+  void testRemoveLanguageWithNullLanguage() {
+    assertThrows(IllegalArgumentException.class, () -> engine.removeLanguage(null));
+  }
+
+  @Test
+  void testRegisterKey() {
+    String key = "test.testRegisterKey";
+
+    assertThat(engine.getAllRegisteredKeys(), not(hasItem(key)));
+
+    engine.registerKey(key);
+
+    assertThat(engine.getAllRegisteredKeys(), hasItem(key));
+
+    engine.unregisterKey(key);
+  }
+
+  @Test
+  void testRegisterKeyWithNullKey() {
+    assertThrows(IllegalArgumentException.class, () -> engine.registerKey(null));
+  }
+
+  @Test
+  void testRegisterKeyWithEmptyKey() {
+    assertThrows(IllegalArgumentException.class, () -> engine.registerKey(""));
+  }
+
+  @Test
+  void testRegisterKeyWithBlankKey() {
+    assertThrows(IllegalArgumentException.class, () -> engine.registerKey(" "));
+  }
+
+  @Test
+  void testUnregisterKey() {
+    String key = "test.testRegisterKey";
+
+    assertThat(engine.getAllRegisteredKeys(), not(hasItem(key)));
+
+    engine.registerKey(key);
+
+    assertThat(engine.getAllRegisteredKeys(), hasItem(key));
+
+    engine.unregisterKey(key);
+
+    assertThat(engine.getAllRegisteredKeys(), not(hasItem(key)));
+  }
+
+  @Test
+  void testUnregisterKeyWithNullKey() {
+    assertThrows(IllegalArgumentException.class, () -> engine.unregisterKey(null));
+  }
+
+  @Test
+  void testUnregisterKeyWithEmptyKey() {
+    assertThrows(IllegalArgumentException.class, () -> engine.unregisterKey(""));
+  }
+
+  @Test
+  void testUnregisterKeyWithBlankKey() {
+    assertThrows(IllegalArgumentException.class, () -> engine.unregisterKey(" "));
+  }
+
+  @AfterEach
+  void tearDown() {
+    engine.setDefaultLanguage(UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
   }
 }
