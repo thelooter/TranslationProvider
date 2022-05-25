@@ -298,7 +298,9 @@ public class TranslationProviderEngineTest {
     engine.setDefaultLanguage(UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
 
     try {
-      connection.close();
+      if (!connection.isClosed()) {
+        connection.close();
+      }
     } catch (SQLException e) {
       logger.severe(ExceptionUtils.getStackTrace(e));
     }

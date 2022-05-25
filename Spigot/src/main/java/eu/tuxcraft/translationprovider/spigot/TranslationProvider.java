@@ -10,7 +10,6 @@ import eu.tuxcraft.translationprovider.spigot.model.LazyLoadingMessage;
 import eu.tuxcraft.translationprovider.spigot.model.Message;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Objects;
 
 /**
@@ -98,11 +96,6 @@ public class TranslationProvider extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    try {
-      connection.close();
-    } catch (SQLException e) {
-      getLogger().severe(ExceptionUtils.getStackTrace(e));
-    }
     getLogger().info("TranslationProviderBukkit disabled");
   }
 
