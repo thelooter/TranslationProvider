@@ -1,13 +1,14 @@
 package eu.tuxcraft.translationprovider.engine.database;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Database helper class for the key database.
@@ -51,21 +52,19 @@ public class KeyDatabaseHelper {
    * Inserts a new Key into the database.
    *
    * @param key The Key to insert.
-   * @return True if the Key was inserted successfully, false otherwise.
    * @since 2.1.0
    */
-  public boolean registerKey(String key) {
+  public void registerKey(String key) {
     try (PreparedStatement preparedStatement =
         connection.prepareStatement(
             "INSERT INTO translation_keys (key) VALUES (?) ON CONFLICT DO NOTHING")) {
 
       preparedStatement.setString(1, key);
 
-      return preparedStatement.executeUpdate() > 0;
+      preparedStatement.executeUpdate();
     } catch (SQLException e) {
       logger.severe(ExceptionUtils.getStackTrace(e));
     }
-    return false;
   }
 
   /**
@@ -93,5 +92,24 @@ public class KeyDatabaseHelper {
     }
 
     return Collections.emptyList();
+  }
+
+  /**
+   * Removes a Key from the Database
+   *
+   * @param key The Key to remove.
+   * @since 2.1.0
+   */
+  public void unregisterKey(String key) {
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement("DELETE FROM translation_keys WHERE key = ?")) {
+
+      preparedStatement.setString(1, key);
+
+      preparedStatement.executeUpdate();
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
   }
 }

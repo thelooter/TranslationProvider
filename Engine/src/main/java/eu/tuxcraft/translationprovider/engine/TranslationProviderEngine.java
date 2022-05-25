@@ -131,7 +131,7 @@ public class TranslationProviderEngine {
    */
   public void playerLanguage(UUID uuid, Language language) {
     if (uuid == null) {
-      throw new IllegalStateException("Cannot change language of ConsoleCommandSender");
+      throw new IllegalArgumentException("Cannot change language of ConsoleCommandSender");
     }
     userLanguageCache.getCache().put(uuid, language);
     new UserDatabaseHelper(uuid).setUserLanguage(language);
@@ -165,11 +165,26 @@ public class TranslationProviderEngine {
    * Registers a new Translation Key
    *
    * @param key The new Translation Key
-   * @return True if the Translation Key was registered, false otherwise
    * @since 2.1.0
    */
-  public boolean registerKey(String key) {
-    return new KeyDatabaseHelper(logger).registerKey(key);
+  public void registerKey(String key) {
+    if (key == null || key.isEmpty() || key.isBlank()) {
+      throw new IllegalArgumentException("Cannot register an empty key");
+    }
+    new KeyDatabaseHelper(logger).registerKey(key);
+  }
+
+  /**
+   * Unregisters a Translation Key
+   *
+   * @param key The Translation Key to unregister
+   * @since 2.1.0
+   */
+  public void unregisterKey(String key) {
+    if (key == null || key.isEmpty() || key.isBlank()) {
+      throw new IllegalArgumentException("Cannot register an empty key");
+    }
+    new KeyDatabaseHelper(logger).unregisterKey(key);
   }
 
   /**
@@ -202,7 +217,7 @@ public class TranslationProviderEngine {
    */
   public void removeLanguage(Language lang) {
     if (lang == null) {
-      return;
+      throw new IllegalArgumentException("Language cannot be null");
     }
     new LanguageDatabaseHelper(logger).removeLanguage(lang);
   }
