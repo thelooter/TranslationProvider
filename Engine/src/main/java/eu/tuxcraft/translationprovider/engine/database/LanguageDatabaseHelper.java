@@ -2,12 +2,13 @@ package eu.tuxcraft.translationprovider.engine.database;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * General helper class for the language database.
@@ -61,9 +62,7 @@ public class LanguageDatabaseHelper {
       insertStatement.setBoolean(3, language.isEnabled());
       insertStatement.setBoolean(4, language.isDefault());
 
-      if (insertStatement.executeUpdate() == 0) {
-        logger.warning("Language already exists, doing nothing!");
-      }
+      insertStatement.executeUpdate();
 
     } catch (SQLException exception) {
       logger.severe(ExceptionUtils.getStackTrace(exception));
@@ -129,6 +128,9 @@ public class LanguageDatabaseHelper {
       try (ResultSet resultSet = selectStatement.executeQuery()) {
         if (resultSet.next()) {
           return Language.fromResultSet(resultSet);
+        } else {
+          logger.warning("No default language found!");
+          return null;
         }
       }
     } catch (SQLException e) {
