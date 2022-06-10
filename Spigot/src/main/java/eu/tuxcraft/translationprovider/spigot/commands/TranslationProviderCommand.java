@@ -4,15 +4,17 @@ import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.add.AddLanguageSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.add.AddTranslationSubCommand;
+import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.edit.EditLanguageSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.help.HelpSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove.RemoveLanguageSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove.RemoveTranslationSubCommand;
-import java.util.logging.Logger;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.logging.Logger;
 
 /**
  * The main command of the plugin.
@@ -45,7 +47,7 @@ public class TranslationProviderCommand implements CommandExecutor {
       @NotNull String[] args) {
 
     if (args.length == 0) {
-      commandSender.sendMessage("Possible Options: reload, stats,clear, add");
+      commandSender.sendMessage("Possible Options: reload, stats,clear, add, edit");
       return true;
     }
 
@@ -99,6 +101,17 @@ public class TranslationProviderCommand implements CommandExecutor {
         commandSender.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
             "&eTranslationProvider Version: &b" + TranslationProvider.getInstance().getDescription()
                 .getVersion()));
+      }
+      case "edit" -> {
+        if (args.length == 1) {
+          commandSender.sendMessage(LegacyComponentSerializer.legacyAmpersand()
+              .deserialize("&cPossible Options: language, translation"));
+          return true;
+        }
+        if (args[1].equals("language")) {
+          new EditLanguageSubCommand(logger,engine, args, commandSender);
+          return true;
+        }
       }
       default -> commandSender.sendMessage("Possible Options: reload, stats, clear, add, remove, help, version");
     }

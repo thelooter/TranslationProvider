@@ -243,4 +243,48 @@ public class TranslationProviderEngine {
   public void removeTranslation(Language language, String key) {
     new TranslationDatabaseHelper(language).removeTranslation(key);
   }
+
+  /**
+   * Edits the Enabled Status of a Language
+   *
+   * @param lang The {@link Language} to edit
+   * @param newState The new Enabled Status
+   * @since 2.1.0
+   */
+  public void editLanguageEnabled(Language lang, boolean newState) {
+    new LanguageDatabaseHelper(logger).editLanguageEnabled(lang, newState);
+  }
+
+  /**
+   * Edits the Default Status of a Translation
+   *
+   * @param lang The {@link Language} to edit
+   * @param value The new Default Status
+   * @since 2.1.0
+   */
+  public void editLanguageDefault(Language lang, boolean value) {
+    new LanguageDatabaseHelper(logger).editLanguageDefault(lang, value);
+  }
+
+  /**
+   * Edits the Name of a Language
+   *
+   * @param lang The {@link Language} to edit
+   * @param newDisplayName The new Name
+   * @since 2.1.0
+   */
+  public void editLanguageDisplayName(Language lang, String newDisplayName) {
+    new LanguageDatabaseHelper(logger).editLanguageDisplayName(lang, newDisplayName);
+  }
+
+  /**
+   * Edits the Language Code of a Language
+   *
+   * @param lang The {@link Language} to edit
+   * @param newIsoCode The new Language Code
+   * @since 2.1.0
+   */
+  public void editLanguageIsoCode(Language lang, String newIsoCode) {
+    new LanguageDatabaseHelper(logger).editLanguageIsoCode(lang, newIsoCode);
+  }
 }

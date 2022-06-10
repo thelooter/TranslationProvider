@@ -36,7 +36,7 @@ public class TranslationProviderCommandTest {
   void testCommandWithoutArguments() {
     player.performCommand("tlp");
 
-    player.assertSaid("Possible Options: reload, stats,clear, add");
+    player.assertSaid("Possible Options: reload, stats,clear, add, edit");
   }
 
   @Test

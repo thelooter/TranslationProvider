@@ -3,8 +3,6 @@ package eu.tuxcraft.translationprovider.spigot.commands.tabcompletion;
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.commands.TranslationProviderCommand;
-import java.util.Collections;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.command.Command;
@@ -12,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * TabCompleter for the @{@link TranslationProviderCommand}
@@ -26,6 +27,7 @@ public class TranslationProviderTabCompletion implements TabCompleter {
 
   String ADD_KEY = "add";
   String REMOVE_KEY = "remove";
+  String EDIT_KEY = "edit";
 
   String LANGUAGE_KEY = "language";
   String TRANSLATION_KEY = "translation";
@@ -57,13 +59,14 @@ public class TranslationProviderTabCompletion implements TabCompleter {
       @NotNull String s,
       @NotNull String[] args) {
     if (args.length == 1) {
-      return List.of("reload", "stats", "clear", "add", "version", "help", "remove");
+      return List.of("reload", "stats", "clear", "add", "version", "help", "remove", "edit");
     }
     if (args.length == 2) {
       if (args[0].equalsIgnoreCase(ADD_KEY)) {
         return List.of(LANGUAGE_KEY, TRANSLATION_KEY);
-      }
-      if (args[0].equalsIgnoreCase(REMOVE_KEY)) {
+      } else if (args[0].equalsIgnoreCase(REMOVE_KEY)) {
+        return List.of(LANGUAGE_KEY, TRANSLATION_KEY);
+      } else if (args[0].equalsIgnoreCase(EDIT_KEY)) {
         return List.of(LANGUAGE_KEY, TRANSLATION_KEY);
       } else {
         return Collections.singletonList("Invalid amount of Arguments");
@@ -82,6 +85,14 @@ public class TranslationProviderTabCompletion implements TabCompleter {
       if (args[0].equalsIgnoreCase(REMOVE_KEY)) {
         return Language.getAvailableLanguages().stream().map(Language::getDisplayName).toList();
       }
+      if (args[0].equalsIgnoreCase(EDIT_KEY)) {
+        if (args[1].equalsIgnoreCase(TRANSLATION_KEY)) {
+          return Language.getAvailableLanguages().stream().map(Language::getDisplayName).toList();
+        }
+        if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
+          return Language.getAvailableLanguages().stream().map(Language::getDisplayName).toList();
+        }
+      }
     }
 
     if (args.length == 4) {
@@ -98,6 +109,15 @@ public class TranslationProviderTabCompletion implements TabCompleter {
       if (args[0].equalsIgnoreCase(REMOVE_KEY) && args[1].equalsIgnoreCase(TRANSLATION_KEY)) {
         return engine.getAllRegisteredKeys();
       }
+
+      if (args[0].equalsIgnoreCase(EDIT_KEY)) {
+        if (args[1].equalsIgnoreCase(TRANSLATION_KEY)) {
+          return engine.getAllRegisteredKeys();
+        }
+        if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
+          return List.of("display_name", "iso_code", "default", "enabled");
+        }
+      }
     }
 
     if (args.length == 5) {
@@ -110,6 +130,24 @@ public class TranslationProviderTabCompletion implements TabCompleter {
         }
         if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
           return Collections.singletonList("<enabled>");
+        }
+      }
+      if (args[0].equalsIgnoreCase(EDIT_KEY)) {
+        if (args[1].equalsIgnoreCase(TRANSLATION_KEY)
+            && Language.getAvailableLanguages().stream()
+                .anyMatch(l -> l.getDisplayName().equalsIgnoreCase(args[2]))
+            && engine.getAllRegisteredKeys().stream().anyMatch(k -> k.equalsIgnoreCase(args[3]))) {
+          return Collections.singletonList("Edit Translation here");
+        }
+        if (args[1].equalsIgnoreCase(LANGUAGE_KEY)) {
+          if (List.of("default", "enabled").contains(args[3])) {
+            return List.of("true", "false");
+          } else if (args[3].equalsIgnoreCase("iso_code")) {
+            return Collections.singletonList("Enter new ISO Code");
+          } else if (args[3].equalsIgnoreCase("display_name")) {
+            return Collections.singletonList("Enter new Display Name");
+          }
+          return Collections.singletonList("Invalid Argument");
         }
       }
     }
