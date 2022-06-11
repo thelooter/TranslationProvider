@@ -48,8 +48,9 @@ public class EditLanguageSubCommand {
      */
   private void executeEditLanguageSubCommand(String[] args) {
     if (args.length != 5) {
-      LegacyComponentSerializer.legacyAmpersand()
-          .deserialize("&cUsage: /tlp edit language <language_name> <property> <value>");
+      sender.sendMessage(LegacyComponentSerializer
+                                 .legacyAmpersand()
+                                 .deserialize("&cUsage: /tlp edit language <language_name> <property> <value>"));
       return;
     }
 
@@ -69,17 +70,34 @@ public class EditLanguageSubCommand {
             .orElse(null);
 
     String property = args[3];
-    boolean value = Boolean.parseBoolean(args[4]);
 
 
     switch (property) {
       case "enabled" -> {
+        if (!List.of("true","false").contains(args[4])){
+          sender.sendMessage(LegacyComponentSerializer
+                                     .legacyAmpersand()
+                                     .deserialize("&cValue must be true or false"));
+          return;
+        }
+
+        boolean value = Boolean.parseBoolean(args[4]);
+
         engine.editLanguageEnabled(lang, value);
         sender.sendMessage(
                 LegacyComponentSerializer.legacyAmpersand()
                         .deserialize("&aSuccessfully set the Enabled Value of language &b" + language + " &ato &b" + value));
       }
       case "default" -> {
+        if (!List.of("true","false").contains(args[4])){
+          sender.sendMessage(LegacyComponentSerializer
+                                     .legacyAmpersand()
+                                     .deserialize("&cValue must be true or false"));
+          return;
+        }
+
+        boolean value = Boolean.parseBoolean(args[4]);
+
         if (value && availableLanguages.stream().anyMatch(Language::isDefault)) {
           sender.sendMessage(
                   LegacyComponentSerializer.legacyAmpersand()
@@ -92,6 +110,7 @@ public class EditLanguageSubCommand {
                         .deserialize("&aSuccessfully set the Default Value of language &b" + language + " &ato &b" + value));
       }
       case "display_name" -> {
+
         engine.editLanguageDisplayName(lang, args[4]);
         sender.sendMessage(
                 LegacyComponentSerializer.legacyAmpersand()
@@ -108,4 +127,5 @@ public class EditLanguageSubCommand {
                         .deserialize("&cProperty " + property + " not found."));
     }
   }
+
 }

@@ -89,19 +89,21 @@ public class TranslationProviderEngine {
    * @since 2.0.0
    */
   public void performReload() {
+    getLogger().info("Starting TranslationProvider reload");
+
+    getTranslationCache().flush();
+    getUserLanguageCache().flush();
+
+    getLogger().info("Caches flushed");
+
+    List<Language> availableLanguages = Language.getAvailableLanguages();
+
+
+    if (availableLanguages.stream().noneMatch(Language::isDefault)) {
+      throw new IllegalStateException("No default language found");
+    }
+
     try {
-      getLogger().info("Starting TranslationProvider reload");
-
-      getTranslationCache().flush();
-      getUserLanguageCache().flush();
-
-      getLogger().info("Caches flushed");
-
-      List<Language> availableLanguages = Language.getAvailableLanguages();
-
-      if (availableLanguages.stream().noneMatch(Language::isDefault)) {
-        throw new IllegalStateException("No default language found");
-      }
 
       getTranslationCache().invalidateTranslationCache();
       getUserLanguageCache().invalidateUserLanguageCache();

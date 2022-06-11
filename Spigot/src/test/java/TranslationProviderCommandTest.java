@@ -255,7 +255,6 @@ public class TranslationProviderCommandTest {
                 .getTranslationCache()
                 .getTranslation(Language.fromDisplayName("English"), "test.command.testChange");
 
-
         TranslationProvider.getEngine()
             .removeTranslation(Language.fromDisplayName("English"), "test.command.testChange");
 
@@ -522,11 +521,12 @@ public class TranslationProviderCommandTest {
         String translation;
 
         try {
-          translation = TranslationProvider.getEngine()
-              .getTranslationCache()
-              .getCache()
-              .get(language)
-              .get("test.command.testChange");
+          translation =
+              TranslationProvider.getEngine()
+                  .getTranslationCache()
+                  .getCache()
+                  .get(language)
+                  .get("test.command.testChange");
         } catch (ExecutionException e) {
           throw new RuntimeException(e);
         }
@@ -541,14 +541,188 @@ public class TranslationProviderCommandTest {
                 .getTranslation(language, "test.testRemove"),
             equalTo(null));
 
-        TranslationProvider.getEngine().addTranslation(language, "test.command.testChange", translation);
-
+        TranslationProvider.getEngine()
+            .addTranslation(language, "test.command.testChange", translation);
       }
-
-
     }
   }
 
+  @Nested
+  class Edit {
+    @BeforeEach
+    void setUp() {
+
+      if (MockBukkit.isMocked()) {
+        MockBukkit.unmock();
+      }
+
+      server = MockBukkit.mock();
+      plugin = MockBukkit.load(TranslationProvider.class);
+
+      player =
+          new PlayerMock(
+              server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
+
+      server.addPlayer(player);
+    }
+
+    @Test
+    void testCommandEdit() {
+      player.performCommand("tlp edit");
+
+      player.assertSaid("§cPossible Options: language, translation");
+    }
+
+    @Nested
+    class EditLanguage {
+
+      @BeforeEach
+      void setUp() {
+
+        if (MockBukkit.isMocked()) {
+          MockBukkit.unmock();
+        }
+
+        server = MockBukkit.mock();
+        plugin = MockBukkit.load(TranslationProvider.class);
+
+        player =
+            new PlayerMock(
+                server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
+
+        server.addPlayer(player);
+      }
+
+      @Test
+      void testCommandEditLanguageTwoArgs() {
+        player.performCommand("tlp edit language");
+
+        player.assertSaid("§cUsage: /tlp edit language <language_name> <property> <value>");
+      }
+
+      @Test
+      void testCommandEditLanguageThreeArgs() {
+        player.performCommand("tlp edit language Deutsch ");
+
+        player.assertSaid("§cUsage: /tlp edit language <language_name> <property> <value>");
+      }
+
+      @Test
+      void testCommandEditLanguageFourArgs() {
+        player.performCommand("tlp edit language Deutsch display_name");
+
+        player.assertSaid("§cUsage: /tlp edit language <language_name> <property> <value>");
+      }
+
+      @Test
+      void testCommandEditLanguageWithNonExistentLanguage() {
+        player.performCommand("tlp edit language notExisting display_name test");
+
+        player.assertSaid("§cLanguage notExisting not found.");
+      }
+
+      @Test
+      void testCommandEditLanguageWithNonExistentProperty() {
+        player.performCommand("tlp edit language English notExisting test");
+
+        player.assertSaid("§cProperty notExisting not found.");
+      }
+
+      @Test
+      void testCommandEditLanguageWithNonExistentValue() {
+        player.performCommand("tlp edit language English enabled notExisting");
+
+        player.assertSaid("§cValue must be true or false");
+      }
+
+      @Test
+      void testDisableLanguage() {
+        assertThat(Language.fromDisplayName("English").isEnabled(), equalTo(true));
+        player.performCommand("tlp edit language English enabled false");
+
+        player.assertSaid(
+            "§aSuccessfully set the Enabled Value of language §bEnglish §ato §bfalse");
+        assertThat(Language.fromDisplayName("English").isEnabled(), equalTo(false));
+
+        TranslationProvider.getEngine()
+            .editLanguageEnabled(Language.fromDisplayName("English"), true);
+      }
+
+      @Test
+      void testEnableLanguage() {
+        TranslationProvider.getEngine()
+            .editLanguageEnabled(Language.fromDisplayName("English"), false);
+        assertThat(Language.fromDisplayName("English").isEnabled(), equalTo(false));
+
+        player.performCommand("tlp edit language English enabled true");
+
+        player.assertSaid("§aSuccessfully set the Enabled Value of language §bEnglish §ato §btrue");
+        assertThat(Language.fromDisplayName("English").isEnabled(), equalTo(true));
+      }
+
+      @Test
+      void testDisableDefaultLanguage() {
+        assertThat(Language.fromDisplayName("Deutsch").isDefault(), equalTo(true));
+        player.performCommand("tlp edit language Deutsch default false");
+
+        player.assertSaid(
+            "§aSuccessfully set the Default Value of language §bDeutsch §ato §bfalse");
+        assertThat(Language.fromDisplayName("Deutsch").isDefault(), equalTo(false));
+
+        TranslationProvider.getEngine()
+            .editLanguageDefault(Language.fromDisplayName("Deutsch"), true);
+      }
+
+      @Test
+      void testEnableDefaultLanguage() {
+        TranslationProvider.getEngine()
+            .editLanguageDefault(Language.fromDisplayName("Deutsch"), false);
+        assertThat(Language.fromDisplayName("Deutsch").isDefault(), equalTo(false));
+
+        player.performCommand("tlp edit language Deutsch default true");
+
+        player.assertSaid("§aSuccessfully set the Default Value of language §bDeutsch §ato §btrue");
+        assertThat(Language.fromDisplayName("Deutsch").isDefault(), equalTo(true));
+      }
+
+      @Test
+      void testEnableDefaultLanguageAlreadyDefault() {
+        player.performCommand("tlp edit language English default true");
+        assertThat(Language.fromDisplayName("English").isDefault(), equalTo(false));
+        player.assertSaid("§cThere is already a default language.");
+      }
+
+      @Test
+      void testDisableDefaultLanguageInvalidValue() {
+        player.performCommand("tlp edit language Deutsch default invalid");
+
+        player.assertSaid("§cValue must be true or false");
+      }
+
+      @Test
+      void testChangeDisplayName() {
+        player.performCommand("tlp edit language English display_name test");
+
+        player.assertSaid("§aChanged Display Name of Language §bEnglish§a to §btest");
+        assertThat(Language.fromDisplayName("test").getDisplayName(), equalTo("test"));
+
+        TranslationProvider.getEngine()
+            .editLanguageDisplayName(Language.fromDisplayName("test"), "English");
+      }
+
+@Test
+      void testChangeIsoCode() {
+        player.performCommand("tlp edit language English iso_code US");
+
+        player.assertSaid("§aChanged Iso Code of Language §bEnglish§a to §bUS");
+        assertThat(Language.fromDisplayName("English").getIsoCode(), equalTo("US"));
+
+        TranslationProvider.getEngine()
+            .editLanguageIsoCode(Language.fromDisplayName("English"), "EN");
+      }
+
+    }
+  }
 
   @AfterEach
   public void tearDown() {

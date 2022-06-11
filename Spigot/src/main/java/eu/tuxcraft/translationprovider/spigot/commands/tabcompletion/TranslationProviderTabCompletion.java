@@ -25,12 +25,12 @@ public class TranslationProviderTabCompletion implements TabCompleter {
 
   TranslationProviderEngine engine;
 
-  String ADD_KEY = "add";
-  String REMOVE_KEY = "remove";
-  String EDIT_KEY = "edit";
+  static String ADD_KEY = "add";
+  static String REMOVE_KEY = "remove";
+  static String EDIT_KEY = "edit";
 
-  String LANGUAGE_KEY = "language";
-  String TRANSLATION_KEY = "translation";
+  static String LANGUAGE_KEY = "language";
+  static String TRANSLATION_KEY = "translation";
 
   /**
    * Creates a new instance of the {@link TranslationProviderTabCompletion}
