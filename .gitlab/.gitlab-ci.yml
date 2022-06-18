@@ -100,7 +100,7 @@ deploy:
 docker:
   stage: docker
   trigger:
-    project: tuxcraft/tuxcraft-hub-docker-image
+    project: tuxcraft/docker-images/tuxcraft-hub-docker-image
     branch: master
   only:
   - master
