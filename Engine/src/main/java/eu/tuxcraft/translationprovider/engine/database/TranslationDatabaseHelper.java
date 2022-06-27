@@ -2,6 +2,11 @@ package eu.tuxcraft.translationprovider.engine.database;
 
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
 import eu.tuxcraft.translationprovider.engine.model.Language;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,10 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Utility class for database operations.
@@ -50,7 +51,7 @@ public class TranslationDatabaseHelper {
                 + "(lang_id VARCHAR(6) NOT NULL, translation_key VARCHAR(64) NOT NULL,"
                 + "translation TEXT,"
                 + "PRIMARY KEY (lang_id, translation_key),"
-                + "FOREIGN KEY (lang_id) REFERENCES languages(iso_code) ON DELETE NO ACTION ON UPDATE NO ACTION )")) {
+                + "FOREIGN KEY (lang_id) REFERENCES translation_languages(iso_code) ON DELETE NO ACTION ON UPDATE CASCADE)")) {
       preparedStatement.execute();
     } catch (SQLException e) {
       TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
@@ -162,6 +163,29 @@ public class TranslationDatabaseHelper {
 
       preparedStatement.setString(1, language.getIsoCode());
       preparedStatement.setString(2, key);
+
+      preparedStatement.executeUpdate();
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
+
+  /**
+   * Edits the given Translation
+   *
+   * @param key The Key
+   * @param newValue The new Value of the Key
+   * @since 2.1.0
+   */
+  public void editTranslation(String key, String newValue) {
+    System.out.println(2);
+    try (PreparedStatement preparedStatement =
+        connection.prepareStatement(
+            "UPDATE translation_entries SET translation = ? WHERE lang_id = ? AND translation_key = ? ")) {
+      preparedStatement.setString(1, newValue);
+      preparedStatement.setString(2, language.getIsoCode());
+      preparedStatement.setString(3, key);
 
       preparedStatement.executeUpdate();
 

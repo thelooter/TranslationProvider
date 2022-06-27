@@ -5,7 +5,10 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import org.bukkit.Bukkit;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -710,7 +713,7 @@ public class TranslationProviderCommandTest {
             .editLanguageDisplayName(Language.fromDisplayName("test"), "English");
       }
 
-@Test
+      @Test
       void testChangeIsoCode() {
         player.performCommand("tlp edit language English iso_code US");
 
@@ -720,7 +723,89 @@ public class TranslationProviderCommandTest {
         TranslationProvider.getEngine()
             .editLanguageIsoCode(Language.fromDisplayName("English"), "EN");
       }
+    }
 
+    @Nested
+    class EditTranslation {
+
+      @BeforeEach
+      void setUp() {
+
+        if (MockBukkit.isMocked()) {
+          MockBukkit.unmock();
+        }
+
+        server = MockBukkit.mock();
+        plugin = MockBukkit.load(TranslationProvider.class);
+
+        player =
+            new PlayerMock(
+                server, "TestPlayer", UUID.fromString("82b9b78e-e807-478e-b212-1c53c4cd1cfd"));
+
+        server.addPlayer(player);
+      }
+
+      @AfterEach
+      void tearDown() {
+        if (MockBukkit.isMocked()) {
+          MockBukkit.unmock();
+        }
+      }
+
+      @Test
+      void testCommandEditTranslationTwoArgs() {
+        player.performCommand("tlp edit translation");
+        player.assertSaid("&cUsage: /tlp edit translation <language_name> <key> <value>");
+      }
+
+      @Test
+      void testCommandEditTranslationThreeArgs() {
+        player.performCommand("tlp edit translation English ");
+        player.assertSaid("&cUsage: /tlp edit translation <language_name> <key> <value>");
+      }
+
+      @Test
+      void testCommandEditTranslationFourArgs() {
+        player.performCommand("tlp edit translation English test ");
+        player.assertSaid("&cUsage: /tlp edit translation <language_name> <key> <value>");
+      }
+
+      @Test
+      void testCommandEditTranslationWithNullLanguage() {
+        player.performCommand("tlp edit translation null test test");
+        player.assertSaid("&cLanguage not found");
+      }
+
+      @Test
+      void testCommandEditTranslationWithNullKey() {
+        player.performCommand("tlp edit translation English null test");
+        player.assertSaid("&cKey not found");
+      }
+
+      @Test
+      void testCommandEditTranslation() {
+        assertThat(
+            TranslationProvider.getEngine()
+                .getTranslationCache()
+                .getTranslation(Language.fromDisplayName("English"), "test.command.testChange"),
+            equalTo("Before"));
+
+        player.performCommand("tlp edit translation English test.command.testChange After");
+
+        player.assertSaid(
+            "&aSuccessfully set the Translation of Key &btest.command.testChange &ato &bAfter");
+
+        TranslationProvider.getEngine().performReload();
+        assertThat(
+            TranslationProvider.getEngine()
+                .getTranslationCache()
+                .getTranslation(Language.fromDisplayName("English"), "test.command.testChange"),
+            equalTo("After"));
+
+        TranslationProvider.getEngine()
+            .editTranslation(
+                Language.fromDisplayName("English"), "test.command.testChange", "Before");
+      }
     }
   }
 
