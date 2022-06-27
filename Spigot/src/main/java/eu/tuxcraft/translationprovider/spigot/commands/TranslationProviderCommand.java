@@ -5,6 +5,7 @@ import eu.tuxcraft.translationprovider.spigot.TranslationProvider;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.add.AddLanguageSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.add.AddTranslationSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.edit.EditLanguageSubCommand;
+import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.edit.EditTranslationSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.help.HelpSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove.RemoveLanguageSubCommand;
 import eu.tuxcraft.translationprovider.spigot.commands.translationprovidercommand.remove.RemoveTranslationSubCommand;
@@ -110,6 +111,11 @@ public class TranslationProviderCommand implements CommandExecutor {
         }
         if (args[1].equals("language")) {
           new EditLanguageSubCommand(logger,engine, args, commandSender);
+          return true;
+        }
+
+        if (args[1].equals("translation")){
+          new EditTranslationSubCommand(logger,engine,args,commandSender);
           return true;
         }
       }

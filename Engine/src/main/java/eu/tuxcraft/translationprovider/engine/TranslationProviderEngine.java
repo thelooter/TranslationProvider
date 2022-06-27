@@ -289,4 +289,15 @@ public class TranslationProviderEngine {
   public void editLanguageIsoCode(Language lang, String newIsoCode) {
     new LanguageDatabaseHelper(logger).editLanguageIsoCode(lang, newIsoCode);
   }
+
+  /**
+   * Edits a given Translation
+   * @param lang The {@link Language} of the Key
+   * @param key The Key
+   * @param newValue The new Value of the Key
+   */
+  public void editTranslation(Language lang, String key, String newValue) {
+    System.out.println(1);
+    new TranslationDatabaseHelper(lang).editTranslation(key, newValue);
+  }
 }
