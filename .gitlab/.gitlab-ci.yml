@@ -88,6 +88,8 @@ Create Badge:
     paths:
     - badges/
     when: always
+  only:
+    - master
 deploy:
   stage: deploy
   needs:
