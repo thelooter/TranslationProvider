@@ -3,7 +3,6 @@ import eu.tuxcraft.translationprovider.engine.model.Language;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -54,12 +53,12 @@ public class TranslationProviderEngineTest {
   }
 
   @Test
-  @Disabled("Disabled until edit Language Feature is added")
   void testReloadWithNoDefaultLanguage() {
-    engine.removeLanguage(Language.getDefaultLanguage());
-    engine.performReload();
+    engine.editLanguageDefault(Language.getDefaultLanguage(), false);
 
     assertThrows(IllegalStateException.class, () -> engine.performReload());
+
+    engine.editLanguageDefault(Language.fromDisplayName("Deutsch"), true);
   }
 
   @Test

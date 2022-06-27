@@ -12,8 +12,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class LanguageDatabaseHelperTest {
   TranslationProviderEngine engine;
@@ -74,6 +73,55 @@ public class LanguageDatabaseHelperTest {
     languageDatabaseHelper.addLanguage(language);
 
     assertThat(Language.getAvailableLanguages(), hasItem(language));
+  }
+
+  @Test
+  void testGetDefaultLanguageWithNoDefaultLanguage() {
+    LanguageDatabaseHelper languageDatabaseHelper =
+        new LanguageDatabaseHelper(Logger.getLogger("LanguageDatabaseHelperTest"));
+
+    languageDatabaseHelper.editLanguageDefault(Language.getDefaultLanguage(), false);
+
+    assertThat(languageDatabaseHelper.getDefaultLanguage(), nullValue());
+
+    languageDatabaseHelper.editLanguageDefault(Language.fromDisplayName("Deutsch"), true);
+  }
+
+  @Test
+  void testEditLanguageDisplayName() {
+    LanguageDatabaseHelper languageDatabaseHelper =
+            new LanguageDatabaseHelper(Logger.getLogger("LanguageDatabaseHelperTest"));
+
+    languageDatabaseHelper.editLanguageDisplayName(Language.fromDisplayName("English"), "American");
+
+    assertThat(Language.fromDisplayName("American").getDisplayName(), equalTo("American"));
+
+    languageDatabaseHelper.editLanguageDisplayName(Language.fromDisplayName("American"), "English");
+  }
+
+  @Test
+  void testEditLanguageIsoCode() {
+    LanguageDatabaseHelper languageDatabaseHelper =
+            new LanguageDatabaseHelper(Logger.getLogger("LanguageDatabaseHelperTest"));
+
+    languageDatabaseHelper.editLanguageIsoCode(Language.fromDisplayName("English"), "US");
+
+    assertThat(Language.fromDisplayName("English").getIsoCode(), equalTo("US"));
+
+    languageDatabaseHelper.editLanguageIsoCode( Language.fromDisplayName("English"), "EN");
+  }
+
+  @Test
+  void testEditLanguageEnabled() {
+    assertThat(Language.fromDisplayName("English").isEnabled(), equalTo(true));
+    LanguageDatabaseHelper languageDatabaseHelper =
+            new LanguageDatabaseHelper(Logger.getLogger("LanguageDatabaseHelperTest"));
+
+    languageDatabaseHelper.editLanguageEnabled(Language.fromDisplayName("English"), false);
+
+    assertThat(Language.fromDisplayName("English").isEnabled(), equalTo(false));
+
+    languageDatabaseHelper.editLanguageEnabled(Language.fromDisplayName("English"), true);
   }
 
   @AfterEach

@@ -1,4 +1,5 @@
 import eu.tuxcraft.translationprovider.engine.TranslationProviderEngine;
+import eu.tuxcraft.translationprovider.engine.database.LanguageDatabaseHelper;
 import eu.tuxcraft.translationprovider.engine.exceptions.LanguageException;
 import eu.tuxcraft.translationprovider.engine.model.Language;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -24,10 +25,8 @@ public class LanguageTest {
 
   Connection connection = null;
 
-
   @BeforeEach
   void setUp() {
-
 
     try {
       Class.forName("org.postgresql.Driver");
@@ -48,12 +47,24 @@ public class LanguageTest {
         });
   }
 
+  @Test
+  void testGetDefaultLanguageWithNoDefaultLanguage() {
+    LanguageDatabaseHelper languageDatabaseHelper =
+        new LanguageDatabaseHelper(Logger.getLogger("LanguageDatabaseHelperTest"));
+
+    languageDatabaseHelper.editLanguageDefault(Language.getDefaultLanguage(), false);
+
+    assertThrows(LanguageException.class, Language::getDefaultLanguage);
+
+    languageDatabaseHelper.editLanguageDefault(Language.fromDisplayName("Deutsch"), true);
+  }
+
   @AfterEach
-    void tearDown() {
-        try {
-        connection.close();
-        } catch (SQLException e) {
-        logger.severe(ExceptionUtils.getStackTrace(e));
-        }
+  void tearDown() {
+    try {
+      connection.close();
+    } catch (SQLException e) {
+      logger.severe(ExceptionUtils.getStackTrace(e));
     }
+  }
 }

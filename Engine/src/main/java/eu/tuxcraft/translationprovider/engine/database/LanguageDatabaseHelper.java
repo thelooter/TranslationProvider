@@ -138,4 +138,90 @@ public class LanguageDatabaseHelper {
     }
     return null;
   }
+
+  /**
+   * Edits the enabled state of a language.
+   *
+   * @param lang The {@link Language} to edit.
+   * @param parseBoolean The new enabled state.
+   * @since 2.1.0
+   */
+  public void editLanguageEnabled(Language lang, boolean parseBoolean) {
+    try (PreparedStatement updateStatement =
+        connection.prepareStatement(
+            "UPDATE translation_languages SET is_enabled = ? WHERE iso_code = ?")) {
+
+      updateStatement.setBoolean(1, parseBoolean);
+      updateStatement.setString(2, lang.getIsoCode());
+
+      updateStatement.executeUpdate();
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
+
+  /**
+   * Edits the DisplayName of a language.
+   *
+   * @param lang The {@link Language} to edit.
+   * @param newDisplayName The new display name.
+   * @since 2.1.0
+   */
+  public void editLanguageDisplayName(Language lang, String newDisplayName) {
+    try (PreparedStatement updateStatement =
+        connection.prepareStatement(
+            "UPDATE translation_languages SET display_name = ? WHERE iso_code = ?")) {
+
+      updateStatement.setString(1, newDisplayName);
+      updateStatement.setString(2, lang.getIsoCode());
+
+      updateStatement.executeUpdate();
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
+
+  /**
+   * Edits the default language.
+   *
+   * @param lang The {@link Language} to edit.
+   * @param value The new default value.
+   * @since 2.1.0
+   */
+  public void editLanguageDefault(Language lang, boolean value) {
+    try (PreparedStatement updateStatement =
+        connection.prepareStatement(
+            "UPDATE translation_languages SET is_default = ? WHERE iso_code = ?")) {
+
+      updateStatement.setBoolean(1, value);
+      updateStatement.setString(2, lang.getIsoCode());
+
+      updateStatement.executeUpdate();
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
+
+  /**
+   * Edits the ISO code of a language.
+   * @param lang The {@link Language} to edit.
+   * @param newIsoCode The new ISO code.
+   */
+  public void editLanguageIsoCode(Language lang, String newIsoCode) {
+    try (PreparedStatement updateStatement =
+        connection.prepareStatement(
+            "UPDATE translation_languages SET iso_code = ? WHERE iso_code = ?")) {
+
+      updateStatement.setString(1, newIsoCode);
+      updateStatement.setString(2, lang.getIsoCode());
+
+      updateStatement.executeUpdate();
+
+    } catch (SQLException e) {
+      TranslationProviderEngine.getInstance().getLogger().severe(ExceptionUtils.getStackTrace(e));
+    }
+  }
 }

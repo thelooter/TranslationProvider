@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
  * @author thelooter
  * @since 2.1.0
  */
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RemoveTranslationSubCommand {
 
   TranslationProviderEngine engine;
