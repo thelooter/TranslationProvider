@@ -297,7 +297,6 @@ public class TranslationProviderEngine {
    * @param newValue The new Value of the Key
    */
   public void editTranslation(Language lang, String key, String newValue) {
-    System.out.println(1);
     new TranslationDatabaseHelper(lang).editTranslation(key, newValue);
   }
 }

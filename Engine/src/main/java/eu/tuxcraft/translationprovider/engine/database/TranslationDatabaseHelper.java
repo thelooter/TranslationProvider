@@ -179,7 +179,6 @@ public class TranslationDatabaseHelper {
    * @since 2.1.0
    */
   public void editTranslation(String key, String newValue) {
-    System.out.println(2);
     try (PreparedStatement preparedStatement =
         connection.prepareStatement(
             "UPDATE translation_entries SET translation = ? WHERE lang_id = ? AND translation_key = ? ")) {
