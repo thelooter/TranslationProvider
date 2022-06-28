@@ -55,8 +55,6 @@ public class TranslationUtilTest {
         new TranslationUtil().translate(
                 "NotExisting", Language.getDefaultLanguage(), Map.of("param", "value"));
 
-    System.out.println(translation);
-
     assertThat(translation, equalTo("NotExisting {param: value}"));
   }
 

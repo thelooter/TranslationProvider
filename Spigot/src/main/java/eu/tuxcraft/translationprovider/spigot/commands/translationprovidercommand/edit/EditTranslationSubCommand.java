@@ -31,7 +31,6 @@ public class EditTranslationSubCommand {
    */
   public EditTranslationSubCommand(
       Logger logger, TranslationProviderEngine engine, String[] args, CommandSender sender) {
-    System.out.println("yaa");
     this.logger = logger;
     this.engine = engine;
     this.sender = sender;
